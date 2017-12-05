@@ -8,7 +8,7 @@ package Classes;
 import java.util.HashMap;
 
 /**
- *
+ * test
  * @author Stuart Reid
  * Sub Class inheriting from the User class defining an instance of a customer.
  */
