@@ -143,6 +143,7 @@ public class CustomerLogin extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void userNameTxtBxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameTxtBxActionPerformed
