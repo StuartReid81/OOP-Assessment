@@ -8,7 +8,7 @@ package Classes;
 import java.util.HashMap;
 
 /**
- * I love lamp testing
+ * 
  * @author Stuart Reid
  * Sub Class inheriting from the User class defining an instance of a customer.
  */
