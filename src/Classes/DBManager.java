@@ -15,6 +15,11 @@ import java.util.HashMap;
  */
 public class DBManager {
 
+    
+    
+    //Methods for DB management of Products and subclasses
+    
+    //method that takes in a Hashmap of products and iterates through it saving to relevant tables
     public void saveAllProducts(HashMap<Integer, Product> products){
         Product prod;
         try {
@@ -43,6 +48,53 @@ public class DBManager {
         }
     }
     
+    //This method takes in a Product as a parameter and stores it to the relevant tables
+    public void saveProduct(Product prod) {
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                Statement stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES ('" + prod.getProductID() + "', '" + prod.getProductName() + "', '" + prod.getPrice() + "', '" + prod.getStockLevel() + ",)");
+                if(prod instanceof Clothing)
+                {
+                    stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL, MEASUREMENT) VALUES ('" + prod.getProductID() + "', '" + ((Clothing) prod).getMeasurement() + ",)");
+                }
+                else
+                {
+                    stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL, SIZE) VALUES ('" + prod.getProductID() + "', '" + ((Footwear) prod).getSize() + ",)");
+                }
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+    }
+    
+    //this method deletes all entries from our trio of product tables
+    public void deleteAllProducts() {
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                Statement stmt = conn.createStatement();
+                
+                stmt.executeUpdate("DELETE * PRODUCTSTABLE; DELETE * CLOTHINGTABLE; DELETE * FOOTWEARTABLE");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Methods for DB management of our Customer class
     
     public void saveAllCustomers(HashMap<Integer, Customer> customers) {
         Customer cust;
@@ -101,6 +153,7 @@ public class DBManager {
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
+            System.out.println(message);
         }
     }
        
@@ -119,6 +172,7 @@ public class DBManager {
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
+            System.out.println(message);
         }
         return deleted;
     }
@@ -161,6 +215,7 @@ public class DBManager {
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
+            System.out.println(message);
         }
         return customers;
     }
@@ -217,6 +272,7 @@ public class DBManager {
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
+            System.out.println(message);
         }
         return cust;
     }
