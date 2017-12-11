@@ -15,7 +15,27 @@ import java.util.HashMap;
  */
 public class DBManager {
 
-
+    public void saveAllProducts(HashMap<Integer, Product> products){
+        Product prod;
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")){
+                Statement stmt = conn.createStatement();
+                
+                for(int y = 0; y< products.size(); y++)
+                {
+                    prod = products.get(y);
+                    stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL, SIZE, MEASUREMENT)" + " VALUES ('" + prod.getProductID() + "', '" +);
+                }
+                
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+    }
+    
+    
     public void saveAllCustomers(HashMap<Integer, Customer> customers) {
         Customer cust;
         try {
