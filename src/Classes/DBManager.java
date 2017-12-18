@@ -33,11 +33,11 @@ public class DBManager {
                     stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES ('" + prod.getProductID() + "', '" + prod.getProductName() + "', '" + prod.getPrice() + "', '" + prod.getStockLevel() + ",)");
                     if(prod instanceof Clothing)
                     {
-                        stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL, MEASUREMENT) VALUES ('" + prod.getProductID() + "', '" + ((Clothing) prod).getMeasurement() + ",)");
+                        stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, MEASUREMENT) VALUES ('" + prod.getProductID() + "', '" + ((Clothing) prod).getMeasurement() + ",)");
                     }
                     else
                     {
-                        stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL, SIZE) VALUES ('" + prod.getProductID() + "', '" + ((Footwear) prod).getSize() + ",)");
+                        stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, SIZE) VALUES ('" + prod.getProductID() + "', '" + ((Footwear) prod).getSize() + ",)");
                     }
                 }
                 
