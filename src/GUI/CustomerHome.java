@@ -68,6 +68,11 @@ public class CustomerHome extends javax.swing.JFrame {
         welcomeLbl.setText("Welcome");
 
         browseBtn.setText("BROWSE PRODUCTS");
+        browseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseBtnActionPerformed(evt);
+            }
+        });
 
         viewOrdersBtn.setText("VIEW MY ORDERS");
 
@@ -146,6 +151,12 @@ public class CustomerHome extends javax.swing.JFrame {
         this.dispose();
         mnu.setVisible(true);
     }//GEN-LAST:event_unregBnActionPerformed
+
+    private void browseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBtnActionPerformed
+        ViewProducts view = new ViewProducts();
+        this.dispose();
+        view.setVisible(true);
+    }//GEN-LAST:event_browseBtnActionPerformed
 
     /**
      * @param args the command line arguments
