@@ -6,6 +6,11 @@
 package GUI;
 
 import Classes.*;
+import java.util.HashMap;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 
 
@@ -15,14 +20,20 @@ import Classes.*;
  */
 public class ViewProducts extends javax.swing.JFrame {
 
-  
     /**
      * Creates new form ViewProducts
      */
     public ViewProducts() {
         initComponents();
-    }
-
+        
+        categoryList.setVisibleRowCount(2);
+        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        DefaultListModel dlm = new DefaultListModel();
+        dlm.addElement("Clothing");
+        dlm.addElement("Footwear");
+        categoryList.setModel(dlm);
+        
+    }   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,18 +68,13 @@ public class ViewProducts extends javax.swing.JFrame {
 
         productLbl.setText("PRODUCTS");
 
-        categoryList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        categoryList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                categoryListValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(categoryList);
 
-        productList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane2.setViewportView(productList);
 
         quantityLbl.setText("QUANTITY:");
@@ -137,6 +143,20 @@ public class ViewProducts extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
+        if(categoryList.getSelectedValue().equals("Clothing"))
+        {
+            DBManager db = new DBManager();
+            DefaultListModel dlm = new DefaultListModel();
+            HashMap<Integer, Clothing> clothing;
+            clothing = db.loadAllClothing();
+            clothing.values().forEach((c) -> {
+                dlm.addElement(c.toString());
+            });
+            productList.setModel(dlm);
+        }
+    }//GEN-LAST:event_categoryListValueChanged
+
     /**
      * @param args the command line arguments
      */
@@ -170,6 +190,8 @@ public class ViewProducts extends javax.swing.JFrame {
                 new ViewProducts().setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -186,4 +208,6 @@ public class ViewProducts extends javax.swing.JFrame {
     private javax.swing.JButton returnBtn;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
+
+
 }
