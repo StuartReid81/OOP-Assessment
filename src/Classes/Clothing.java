@@ -58,6 +58,6 @@ public class Clothing extends Product{
     @Override
     public String productToString()
     {
-        return ("" + super.getProductID() + " " + super.getProductName() + " " + super.getPrice() + " " + super.getStockLevel() + " " + measurement + "");
+        return ("Item No: " + super.getProductID() + ", Name: " + super.getProductName() + ", Price: £" + String.format("%.2f", super.getPrice()) + ", Stock Available: " + super.getStockLevel() + ", Measurement: " + measurement + "");
     }
 }
