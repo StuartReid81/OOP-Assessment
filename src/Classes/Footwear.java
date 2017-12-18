@@ -54,4 +54,10 @@ public class Footwear extends Product{
         super(productName, price, stockLevel);
         this.size = size;
     }
+    
+        @Override
+    public String productToString()
+    {
+        return ("" + super.getProductID() + " " + super.getProductName() + " " + super.getPrice() + " " + super.getStockLevel() + " " + size + "");
+    }
 }
