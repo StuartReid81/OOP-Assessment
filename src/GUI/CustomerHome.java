@@ -91,6 +91,11 @@ public class CustomerHome extends javax.swing.JFrame {
         });
 
         logoutBtn.setText("LOG OUT");
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -157,6 +162,14 @@ public class CustomerHome extends javax.swing.JFrame {
         this.dispose();
         view.setVisible(true);
     }//GEN-LAST:event_browseBtnActionPerformed
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        cust = null;
+        infoBox("You have been logged out!\nClose this window to return to the main menu.","USER STATUS");
+        Menu mnu = new Menu(customers, cust);
+        this.dispose();
+        mnu.setVisible(true);
+    }//GEN-LAST:event_logoutBtnActionPerformed
 
     /**
      * @param args the command line arguments

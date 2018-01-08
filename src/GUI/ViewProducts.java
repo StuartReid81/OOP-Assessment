@@ -6,8 +6,10 @@
 package GUI;
 
 import Classes.*;
+import static GUI.CustomerHome.infoBox;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 
@@ -17,6 +19,9 @@ import javax.swing.ListSelectionModel;
  * @author angel
  */
 public class ViewProducts extends javax.swing.JFrame {
+    
+    Customer cust;
+    
 
     /**
      * Creates new form ViewProducts
@@ -80,6 +85,11 @@ public class ViewProducts extends javax.swing.JFrame {
         quantityDD.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", " " }));
 
         addBtn.setText("ADD TO BASKET");
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -155,7 +165,34 @@ public class ViewProducts extends javax.swing.JFrame {
             });
             productList.setModel(dlm);
         }
+        if(categoryList.getSelectedValue().equals("Footwear"))
+        {
+            DBManager db = new DBManager();
+            DefaultListModel dlm = new DefaultListModel();
+            HashMap<Integer, Footwear> footwear;
+            footwear = db.loadAllFootwear();
+            footwear.values().forEach((c) -> {
+                dlm.addElement(c);
+            });
+            productList.setModel(dlm);
+        }
     }//GEN-LAST:event_categoryListValueChanged
+
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        if(cust == null)
+        {
+            DefaultListModel dlm;
+            int index = productList.getSelectedIndex();
+            dlm = (DefaultListModel)productList.getModel();
+            Product p = (Product)dlm.getElementAt(index);
+            int quantity = quantityDD.getSelectedIndex()+1;
+            
+            OrderLine ol = new OrderLine(p, quantity ,(p.getPrice()*quantity));
+            
+            infoBox("Item has been","BASKET");
+            
+        }
+    }//GEN-LAST:event_addBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,9 +227,12 @@ public class ViewProducts extends javax.swing.JFrame {
                 new ViewProducts().setVisible(true);
             }
         });
-        
-        
     }
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
