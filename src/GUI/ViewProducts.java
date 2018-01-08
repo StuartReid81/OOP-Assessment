@@ -8,8 +8,6 @@ package GUI;
 import Classes.*;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 
@@ -153,7 +151,7 @@ public class ViewProducts extends javax.swing.JFrame {
             HashMap<Integer, Clothing> clothing;
             clothing = db.loadAllClothing();
             clothing.values().forEach((c) -> {
-                dlm.addElement(c.productToString());
+                dlm.addElement(c);
             });
             productList.setModel(dlm);
         }
@@ -170,7 +168,7 @@ public class ViewProducts extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

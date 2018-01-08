@@ -10,7 +10,7 @@ package Classes;
  * @author Stuart Reid
  * Super class defining the an instance of a product. 
  */
-public abstract class Product {
+public class Product {
     
     //attributes
     private int productID;
@@ -73,5 +73,5 @@ public abstract class Product {
     }
     
     //methods
-    public abstract String productToString();
+    //public abstract String productToString();
 }

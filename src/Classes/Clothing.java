@@ -55,8 +55,9 @@ public class Clothing extends Product{
         this.measurement = measurement;
     }
     
+    
     @Override
-    public String productToString()
+    public String toString()
     {
         return ("Item No: " + super.getProductID() + ", Name: " + super.getProductName() + ", Price: £" + String.format("%.2f", super.getPrice()) + ", Stock Available: " + super.getStockLevel() + ", Measurement: " + measurement + "");
     }
