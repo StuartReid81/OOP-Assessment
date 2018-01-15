@@ -56,6 +56,8 @@ public class Menu extends javax.swing.JFrame {
         viewProductBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
+        setResizable(false);
 
         menuLbl.setText("MAIN MENU");
 

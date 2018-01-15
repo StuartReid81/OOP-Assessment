@@ -64,6 +64,7 @@ public class CustomerHome extends javax.swing.JFrame {
         logoutBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
 
         welcomeLbl.setText("Welcome");
 

@@ -62,6 +62,7 @@ public class CustomerLogin extends javax.swing.JFrame {
         passwordTxtBx = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
 
         titleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleLbl.setText("CUSTOMER LOGIN");
