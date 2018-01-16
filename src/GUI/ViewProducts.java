@@ -21,6 +21,7 @@ import javax.swing.ListSelectionModel;
 public class ViewProducts extends javax.swing.JFrame {
     
     Customer cust;
+    HashMap<Integer, OrderLine> basket;
     
 
     /**
@@ -67,6 +68,11 @@ public class ViewProducts extends javax.swing.JFrame {
         titleLbl.setText("PRODUCTS");
 
         basketBtn.setText("VIEW BASKET");
+        basketBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                basketBtnActionPerformed(evt);
+            }
+        });
 
         categoriesLbl.setText("CATEGORIES");
 
@@ -190,10 +196,21 @@ public class ViewProducts extends javax.swing.JFrame {
             
             OrderLine ol = new OrderLine(p, quantity ,(p.getPrice()*quantity));
             
-            infoBox("Item has been","BASKET");
+            DBManager db = new DBManager();
+            
+            ol.setProductLineID(db.getNextOrderLineID());
+            
+            db.saveOrderLine(ol);
+            
+            basket.put(ol.getProductLineID(), ol);
+            infoBox("Items have been added to your basket!","BASKET");
             
         }
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void basketBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basketBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_basketBtnActionPerformed
 
     /**
      * @param args the command line arguments
