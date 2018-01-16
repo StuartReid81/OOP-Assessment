@@ -190,7 +190,7 @@ public class DBManager {
      * @param originalCloth
      * @param newCloth 
      */
-        public void updateClothingItem (Clothing originalCloth, Clothing newCloth)
+    public void updateClothingItem (Clothing originalCloth, Clothing newCloth)
     {
         try {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -211,7 +211,7 @@ public class DBManager {
      * @param originalFoot
      * @param newFoot
      */
-        public void updateFootwearItem (Footwear originalFoot, Footwear newFoot)
+    public void updateFootwearItem (Footwear originalFoot, Footwear newFoot)
     {
         try {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -259,6 +259,20 @@ public class DBManager {
         return cloth;
     }
         
+
+    public Product findProduct(int id)
+    {
+        if(findClothing(id)!=null)
+        {
+            return findClothing(id);
+        }
+        else
+        {
+            return findFootwear(id);
+        }
+    }
+    
+    
     
     public Footwear findFootwear(int id)
     {
@@ -292,12 +306,84 @@ public class DBManager {
     }
     
     
+    public int getNextOrderLineID()
+    {
+        int next = 1;
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select MAX(ORDERLINEID) From ORDERLINESTABLE";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                    next = rst.getInt(1);              
+                    next++;
+                
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        
+        return next;
+    }
     
     
+    public void saveOrderLine(OrderLine ol)
+    {
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) 
+            {
+                Statement stmt = conn.createStatement();
+                int id = ol.getProduct().getProductID();
+                String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
+                stmt.executeUpdate(query);
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+
+    }
     
     
-    
-    
+    public OrderLine loadOrderLine(String input)
+    {
+        OrderLine ol = new OrderLine();
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From ORDERLINESTABLE Where PRODUCTLINEID = '" + input.trim() + "'";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                ol.setProductLineID(rst.getInt("PRDUCTLINEID"));
+                ol.setProduct(findProduct(rst.getInt("PRODUCTID")));
+                ol.setLineTotal(rst.getDouble("LINETOTAL"));
+                ol.setQuantity(rst.getInt("QUANTITY"));
+            }
+            else
+            {
+                ol = null;
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return ol;
+    }
     
     
     
