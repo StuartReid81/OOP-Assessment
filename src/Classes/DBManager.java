@@ -314,14 +314,15 @@ public class DBManager {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             Statement stmt = conn.createStatement();
-            String sql = "Select (MAX)PRODUCTLINEID From ORDERLINESTABLE";
+            String sql = "Select MAX(ORDERLINEID) From ORDERLINESTABLE";
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
             {
-                next = rst.getInt("PRODUCTLINEID");
-                next++;
+                    next = rst.getInt(1);              
+                    next++;
+                
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
@@ -341,7 +342,9 @@ public class DBManager {
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) 
             {
                 Statement stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, QUANTITY, LINETOTAL)" + " VALUES ('" + ol.getProduct().getProductID() + "', '" + ol.getQuantity() + "', '" + ol.getLineTotal() + ",)");
+                int id = ol.getProduct().getProductID();
+                String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
+                stmt.executeUpdate(query);
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
