@@ -9,6 +9,8 @@ import Classes.*;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,9 +22,9 @@ public class ViewBasket extends javax.swing.JFrame {
     HashMap<String, Customer> customers;
     HashMap<Integer, OrderLine> basket;
     
-    DefaultListModel dlm = new DefaultListModel();
-    
 
+    
+    
     
     
     /**
@@ -39,12 +41,7 @@ public class ViewBasket extends javax.swing.JFrame {
         this.cust = cust;
     }
     
-    public ViewBasket(Customer cust, HashMap<String, Customer> customers)
-    {
-        initComponents();
-        this.cust = cust;
-        this.customers = customers;
-    }
+
     
     public ViewBasket(Customer cust, HashMap<String, Customer> customers, HashMap<Integer,OrderLine> basket)
     {
@@ -59,18 +56,44 @@ public class ViewBasket extends javax.swing.JFrame {
         }
         else
         { 
-           
+           fillTable();
         }
     }
     
-    public ViewBasket(HashMap<String, Customer> customers,HashMap<Integer,OrderLine> basket)
+    public ViewBasket(Customer cust,HashMap<Integer,OrderLine> basket)
     {
         initComponents();
-        this.customers = customers;
+        this.cust = cust;
         this.basket = basket;
-        cust = null;
+        
+        if(basket.isEmpty())
+        {
+            infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
+        }
+        else
+        { 
+           fillTable();
+        }
     }
 
+    private void fillTable()
+    {
+    DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
+    
+    
+    basket.keySet().stream().map((key) -> {
+        String[] data = new String[4];
+        data[0] = "" + basket.get(key).getProduct().getProductID() + "";
+        data[1] = "" + basket.get(key).getProduct().getProductName() + "";
+        data[2] = "" + basket.get(key).getProduct().getPrice() + "";
+        data[3] = "" + basket.get(key).getQuantity() + "";
+            return data;
+        }).forEachOrdered((data) -> {
+            tableModel.addRow(data);
+        });
+    bsktTbl.setModel(tableModel);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,7 +104,7 @@ public class ViewBasket extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        bskt_Tbl = new javax.swing.JTable();
+        bsktTbl = new javax.swing.JTable();
         addBtn = new javax.swing.JButton();
         removeBtn = new javax.swing.JButton();
         buyBtn = new javax.swing.JButton();
@@ -91,18 +114,15 @@ public class ViewBasket extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(700, 600));
 
-        bskt_Tbl.setModel(new javax.swing.table.DefaultTableModel(
+        bsktTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Product ID", "Product", "Price", "Quantity"
             }
         ));
-        jScrollPane1.setViewportView(bskt_Tbl);
+        jScrollPane1.setViewportView(bsktTbl);
 
         addBtn.setText("ADD MORE PRODUCTS");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -201,7 +221,7 @@ public class ViewBasket extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
-    private javax.swing.JTable bskt_Tbl;
+    private javax.swing.JTable bsktTbl;
     private javax.swing.JButton buyBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton removeBtn;

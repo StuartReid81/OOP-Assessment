@@ -41,11 +41,11 @@ public class CustomerHome extends javax.swing.JFrame {
 
     /**
      * Creates new form CustomerHome
-     * @param customers 
+     * @param cust 
      */
-    public CustomerHome(HashMap<String, Customer> customers) {
+    public CustomerHome(Customer cust) {
         initComponents();
-        this.customers = customers;
+        this.cust = cust;
     }
     /**
      * This method is called from within the constructor to initialise the form.
@@ -159,7 +159,7 @@ public class CustomerHome extends javax.swing.JFrame {
     }//GEN-LAST:event_unregBnActionPerformed
 
     private void browseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBtnActionPerformed
-        ViewProducts view = new ViewProducts();
+        ViewProducts view = new ViewProducts(cust);
         this.dispose();
         view.setVisible(true);
     }//GEN-LAST:event_browseBtnActionPerformed

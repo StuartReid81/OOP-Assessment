@@ -22,6 +22,8 @@ public class ViewProducts extends javax.swing.JFrame {
     Customer cust;
     HashMap<Integer, OrderLine> basket;
     
+    
+    
 
     /**
      * Creates new form ViewProducts
@@ -38,7 +40,57 @@ public class ViewProducts extends javax.swing.JFrame {
         dlm.addElement("Footwear");
         categoryList.setModel(dlm);
         
+        if (cust == null)
+        {
+            returnBtn.setText("Return to Main Menu");
+        }        
     }   
+    
+    public ViewProducts(Customer cust, HashMap<Integer, OrderLine> basket)
+    {
+        initComponents();
+        
+        this.basket = basket;
+        this.cust = cust;
+        
+        categoryList.setVisibleRowCount(2);
+        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        DefaultListModel dlm = new DefaultListModel();
+        dlm.addElement("Clothing");
+        dlm.addElement("Footwear");
+        categoryList.setModel(dlm);
+        
+        if (cust == null)
+        {
+            returnBtn.setText("Return to Main Menu");
+        }        
+    }
+    
+    
+    
+    
+        public ViewProducts(Customer cust)
+    {
+        initComponents();
+        
+        this.cust = cust;
+        
+        categoryList.setVisibleRowCount(2);
+        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        DefaultListModel dlm = new DefaultListModel();
+        dlm.addElement("Clothing");
+        dlm.addElement("Footwear");
+        categoryList.setModel(dlm);
+        
+        if (cust == null)
+        {
+            returnBtn.setText("Return to Main Menu");
+        }        
+    }
+        
+        
+        
+        
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +117,11 @@ public class ViewProducts extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(700, 600));
 
         returnBtn.setText("RETURN TO CUSTOMER HOME");
+        returnBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                returnBtnActionPerformed(evt);
+            }
+        });
 
         titleLbl.setText("PRODUCTS");
 
@@ -187,8 +244,7 @@ public class ViewProducts extends javax.swing.JFrame {
     }//GEN-LAST:event_categoryListValueChanged
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        if(cust == null)
-        {
+
             DefaultListModel dlm;
             int index = productList.getSelectedIndex();
             dlm = (DefaultListModel)productList.getModel();
@@ -207,12 +263,29 @@ public class ViewProducts extends javax.swing.JFrame {
             
             infoBox("Items have been added to your basket!","BASKET");
             
-        }
+    
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void basketBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basketBtnActionPerformed
-        // TODO add your handling code here:
+        ViewBasket vb = new ViewBasket(cust, basket);
+        this.dispose();
+        vb.setVisible(true);
     }//GEN-LAST:event_basketBtnActionPerformed
+
+    private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
+        if(cust == null)
+        {
+            Menu menu = new Menu(); 
+            this.dispose();
+            menu.setVisible(true);
+        }
+        else
+        {
+            CustomerHome custhome = new CustomerHome(cust);
+            this.dispose();
+            custhome.setVisible(true);
+        }
+    }//GEN-LAST:event_returnBtnActionPerformed
 
     /**
      * @param args the command line arguments

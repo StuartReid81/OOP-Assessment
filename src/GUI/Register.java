@@ -224,7 +224,7 @@ public class Register extends javax.swing.JFrame {
         if(db.findCustomer(userNameTxtBx.getText())== null)
         {
             HashMap<Integer, Order> orders = new HashMap<>();
-            newCust = new Customer(userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
+            newCust = new Customer(userNameTxtBx.getText().toLowerCase(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
             customers.put(newCust.getUsername(), newCust);
             db.saveCustomer(newCust);
             titleLbl.setText("User Created");
