@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
 import Classes.*;
@@ -13,33 +8,28 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 
-
 /**
- *
- * @author angel
+ * @date 
+ * @author Stuart Reid
+ * class defining an instance of the View Products page
  */
 public class ViewProducts extends javax.swing.JFrame {
     
     Customer cust;
     HashMap<Integer, OrderLine> basket;
-    
-    
-    
+   
 
     /**
      * Creates new form ViewProducts
+     * sets up page and maps basket to a new Hashmap. We call the fillCategoryList method and checks for a logged in customer
      */
-    public ViewProducts() {
+    public ViewProducts() 
+    {
         initComponents();
         
         basket = new HashMap<>();
         
-        categoryList.setVisibleRowCount(2);
-        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        DefaultListModel dlm = new DefaultListModel();
-        dlm.addElement("Clothing");
-        dlm.addElement("Footwear");
-        categoryList.setModel(dlm);
+        fillCategoryList();
         
         if (cust == null)
         {
@@ -47,6 +37,13 @@ public class ViewProducts extends javax.swing.JFrame {
         }        
     }   
     
+
+    /**
+     * Creates new form ViewProducts
+     * @param cust holds our logged in customer that is passed from previous form
+     * @param basket holds our list of items we wish to purchase
+     * sets up page and maps basket and cust to parameters passed in. We call the fillCategoryList method and checks for a logged in customer
+     */
     public ViewProducts(Customer cust, HashMap<Integer, OrderLine> basket)
     {
         initComponents();
@@ -54,12 +51,7 @@ public class ViewProducts extends javax.swing.JFrame {
         this.basket = basket;
         this.cust = cust;
         
-        categoryList.setVisibleRowCount(2);
-        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        DefaultListModel dlm = new DefaultListModel();
-        dlm.addElement("Clothing");
-        dlm.addElement("Footwear");
-        categoryList.setModel(dlm);
+        fillCategoryList();
         
         if (cust == null)
         {
@@ -68,29 +60,25 @@ public class ViewProducts extends javax.swing.JFrame {
     }
     
     
-    
-    
-        public ViewProducts(Customer cust)
+    /**
+     * Creates new form ViewProducts
+     * @param cust holds our logged in customer that is passed from previous form
+     * sets up page and maps cust to parameter passed in. We call the fillCategoryList method and checks for a logged in customer
+     */
+    public ViewProducts(Customer cust)
     {
         initComponents();
         
         this.cust = cust;
         basket = new HashMap<>();
         
-        categoryList.setVisibleRowCount(2);
-        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        DefaultListModel dlm = new DefaultListModel();
-        dlm.addElement("Clothing");
-        dlm.addElement("Footwear");
-        categoryList.setModel(dlm);
+        fillCategoryList();
         
         if (cust == null)
         {
             returnBtn.setText("Return to Main Menu");
         }        
     }
-        
-        
         
         
     /**
@@ -225,133 +213,248 @@ public class ViewProducts extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * On click listener checking for changed selection in our categoryList
+     * @param evt (un-used)
+     */
     private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
 
+        //if list box selection equals clothing
         if(categoryList.getSelectedValue().equals("Clothing"))
         {
+            //set up db manager, clothing HashMap and list model
             DBManager db = new DBManager();
             DefaultListModel dlm = new DefaultListModel();
-            HashMap<Integer, Clothing> clothing;
-            clothing = db.loadAllClothing();
+            HashMap<Integer, Clothing> clothing;    
+            
+            //maps clothing to the HashMap returned from the DB
+            clothing = db.loadAllClothing();         
+            
+            //loops the HashMap adding each product to our list model
             clothing.values().forEach((c) -> {
                 dlm.addElement(c);
-            });
+            });    
+            
+            //passed the list model to the list for display
             productList.setModel(dlm);
         }
+        
+        //if list box selection equals footwear
         if(categoryList.getSelectedValue().equals("Footwear"))
         {
+            //set up db manager, footwear HashMap and list model
             DBManager db = new DBManager();
             DefaultListModel dlm = new DefaultListModel();
             HashMap<Integer, Footwear> footwear;
+            
+            //maps footwear to the HashMap returned from the DB
             footwear = db.loadAllFootwear();
+            
+            //loops the HashMap adding each product to our list model
             footwear.values().forEach((c) -> {
                 dlm.addElement(c);
             });
+            
+            //passed the list model to the list for display
             productList.setModel(dlm);
         }
-        
-
     }//GEN-LAST:event_categoryListValueChanged
 
+    
+    /**
+     * on click listener for our add to basket button
+     * @param evt (un-used)
+     */
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        //if there is a category value selected
         if(categoryList.getSelectedValue() != null)
         {
+            //if there is a product value selected
             if(productList.getSelectedValue() != null)
             {
+                //creates list model
                 DefaultListModel dlm;
+                
+                // gets selected items index number
                 int index = productList.getSelectedIndex();
+                
+                //gets list model from list box
                 dlm = (DefaultListModel)productList.getModel();
+                
+                //creates product p and sets it to the element at the given index
                 Product p = (Product)dlm.getElementAt(index);
+                
+                //takes the value from our quantity drop down box
                 int quantity = quantityDD.getSelectedIndex()+1;
 
+                //creates a db manager
                 DBManager db = new DBManager();
 
+                //creates instance ol of our OrderLines class using the overloaded constructor
+                //uses the DB method for finding the highest orderline ID  
                 OrderLine ol = new OrderLine(db.getNextOrderLineID(), p, quantity ,(p.getPrice()*quantity));
 
+                //saves the orderline to our DB
                 db.saveOrderLine(ol);
 
+                //stores the id to an int variable
                 int id = ol.getProductLineID();
 
+                //adds ol to our HashMap
                 basket.put(id, ol);
 
+                //displays confirmation window
                 infoBox("Items have been added to your basket!","BASKET");
-        
             }
+            
+            //if there is no product selected we display message in pop up window
             else
             {
                  infoBox("Please select an item!","BASKET");
             }
         }
+        
+        //if there is no category selected we display message in pop up window
         else
         {
             infoBox("Please select a category!","BASKET");
         }
-    
     }//GEN-LAST:event_addBtnActionPerformed
 
     
-    
+    /**
+     * on click for our view basket button
+     * @param evt (un-used)
+     */
     private void basketBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basketBtnActionPerformed
+        //if basket HashMap is not empty
         if(!basket.isEmpty())
         {
-        ViewBasket vb = new ViewBasket(cust, basket);
-        this.dispose();
-        vb.setVisible(true);
+            //create a view basket form passing in our cust variable and our basket hashmap
+            ViewBasket vb = new ViewBasket(cust, basket);
+
+            //close current window
+            this.dispose();
+            
+            //make new one visible
+            vb.setVisible(true);
         }
+        //if basket is empty
         else
         {       
+            //display error message pop up
             infoBox("The basket is empty!","BASKET");
         }
     }//GEN-LAST:event_basketBtnActionPerformed
 
     
-    
+    /**
+     * on click for our back button
+     * @param evt (un-used)
+     */
     private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
+        //if no customer is logged in
         if(cust == null)
         {
-            Menu menu = new Menu(); 
+            //create new menu form
+            Menu menu = new Menu();
+            
+            //close current form
             this.dispose();
+            
+            //make new form visible
             menu.setVisible(true);
         }
+        //if customer is logged in
         else
         {
+            //create instance of our customer home form passing our cust variable to the new form
             CustomerHome custhome = new CustomerHome(cust);
+            
+            //close existing form
             this.dispose();
+            
+            //make new form visible
             custhome.setVisible(true);
         }
     }//GEN-LAST:event_returnBtnActionPerformed
 
     
-    
+    /**
+     * on click listener for our product list box triggered when the selected element is changed
+     * this method is used to ensure the quantity drop down is populated dynamically
+     * @param evt (un-used)
+     */
     private void productListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_productListValueChanged
+        //creates default list model variable
         DefaultListModel dlm;
+        
+        //sotres selected index to an iint variable
         int index = productList.getSelectedIndex();
+        
+        //gets list model and stores to our variable
         dlm = (DefaultListModel)productList.getModel();
+        
+        //gets the product selected and stores it to p
         Product p = (Product)dlm.getElementAt(index);
         
+        //checks is the product is in stock
         if(p.getStockLevel() != 0)
         {
+            //enables our add button and drop down
             addBtn.setEnabled(true);
             quantityDD.setEnabled(true);
+            
+            //creates a string array the size of our stock level
             String[] quantity = new String[p.getStockLevel()];
 
+            //loops from 1 to our stock level adding each number to our array
             for (int i = 1; i <= p.getStockLevel(); i++)
             {
                 quantity[i-1] = "" + i;
             }
 
+            //stores the array to a combobox model
             DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
+            
+            ///sets the model to our combo box for display
             quantityDD.setModel(dcbm);
         }
+        //if there is no stock
         else
         {
+            //disables our add button and dropdown
             addBtn.setEnabled(false);
             quantityDD.setEnabled(false);
+            
+            //displays error message pop up for user
             infoBox("This item is out of stock!","BASKET");
         }
-        
     }//GEN-LAST:event_productListValueChanged
 
+    
+    /**
+     * method filling our category list box
+     */
+    private void fillCategoryList()
+    {
+        //sets rows to 2
+        categoryList.setVisibleRowCount(2);
+        
+        //ensures one selection at a time
+        categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        //creates new default list model
+        DefaultListModel dlm = new DefaultListModel();
+        
+        //adds current categories to list model
+        dlm.addElement("Clothing");
+        dlm.addElement("Footwear");
+        
+        //displays list model via list box
+        categoryList.setModel(dlm);
+    }
     
     
     /**
@@ -388,6 +491,13 @@ public class ViewProducts extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    /**
+     * method defining an instance of our pop up window
+     * @param infoMessage takes in the message we want displayed
+     * @param titleBar takes in the title of the pop up window
+     */
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
