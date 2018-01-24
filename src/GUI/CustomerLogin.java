@@ -18,7 +18,6 @@ import java.util.HashMap;
 public class CustomerLogin extends javax.swing.JFrame {
 
     //attributes
-    HashMap<String, Customer> customers;
     Customer cust;
     
     /**
@@ -27,20 +26,13 @@ public class CustomerLogin extends javax.swing.JFrame {
     public CustomerLogin() {
         initComponents();
         cust = null;
-        customers = new HashMap<>();
     }
     /**
      * Overloaded Constructor passing in Customer instance and HashMap of Customers
      * @param cust this parameter is an instance of the customer class and is passed to the page if there is currently a customer logged in
-     * @param customers This is a HashMap of customers passed to the page for continuity between screens as it is not currently used on this page
      */
-    public CustomerLogin(HashMap<String, Customer> customers, Customer cust){initComponents(); this.cust = cust; this.customers = customers;}
+    public CustomerLogin( Customer cust){initComponents(); this.cust = cust;}
 
-    /**
-     * Overloaded Constructor passing in a HashMap of Customers and creating an instance of our CustomerLogin Screen
-     * @param customers This is a HashMap of customers passed to the page for continuity between screens as it is not currently used on this page
-     */
-    public CustomerLogin(HashMap<String, Customer> customers){initComponents(); this.customers = customers;}
     
     
     /**
@@ -175,7 +167,7 @@ public class CustomerLogin extends javax.swing.JFrame {
             if (unCorrect && pwCorrect)
             {
                 cust = myCust;
-                CustomerHome home = new CustomerHome(customers, cust);
+                CustomerHome home = new CustomerHome(cust);
                 home.setVisible(true);
                 this.dispose();
             }
@@ -190,20 +182,20 @@ public class CustomerLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (cust != null)
         {
-            Menu menu = new Menu(customers, cust);
+            Menu menu = new Menu(cust);
             this.dispose();
             menu.setVisible(true);
         }
         else
         {
-            Menu menu = new Menu(customers);
+            Menu menu = new Menu();
             this.dispose();
             menu.setVisible(true);
         }
     }//GEN-LAST:event_mainMenuBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        Register reg = new Register(customers);
+        Register reg = new Register();
         reg.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_registerBtnActionPerformed

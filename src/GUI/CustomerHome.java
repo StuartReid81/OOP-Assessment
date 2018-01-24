@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 public class CustomerHome extends javax.swing.JFrame {
 
     //attributes
-    HashMap<String, Customer> customers;
     Customer cust;
     DBManager db;
     
@@ -25,20 +24,8 @@ public class CustomerHome extends javax.swing.JFrame {
      */
     public CustomerHome() {
         initComponents();
-        customers = new HashMap<>();
     }
     
-    /**
-     * Creates new form CustomerHome
-     * @param customers
-     * @param cust 
-     */
-    public CustomerHome(HashMap<String, Customer> customers, Customer cust) {
-        initComponents();
-        this.customers = customers;
-        this.cust = cust;
-    }
-
     /**
      * Creates new form CustomerHome
      * @param cust 
@@ -47,6 +34,9 @@ public class CustomerHome extends javax.swing.JFrame {
         initComponents();
         this.cust = cust;
     }
+
+
+    
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -140,7 +130,7 @@ public class CustomerHome extends javax.swing.JFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        EditDetails edt = new EditDetails(cust, customers);
+        EditDetails edt = new EditDetails(cust);
         this.dispose();
         edt.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
@@ -149,11 +139,10 @@ public class CustomerHome extends javax.swing.JFrame {
         welcomeLbl.setText("You heve been de-registered!");
         db = new DBManager();
         db.deleteCustomer(cust);
-        customers.remove(cust.getUsername());
 
         infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
         
-        Menu mnu = new Menu(customers);
+        Menu mnu = new Menu();
         this.dispose();
         mnu.setVisible(true);
     }//GEN-LAST:event_unregBnActionPerformed
@@ -167,7 +156,7 @@ public class CustomerHome extends javax.swing.JFrame {
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         cust = null;
         infoBox("You have been logged out!\nClose this window to return to the main menu.","USER STATUS");
-        Menu mnu = new Menu(customers, cust);
+        Menu mnu = new Menu(cust);
         this.dispose();
         mnu.setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
@@ -207,7 +196,7 @@ public class CustomerHome extends javax.swing.JFrame {
         });
     }
 
-        public static void infoBox(String infoMessage, String titleBar)
+    public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
     }

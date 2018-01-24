@@ -14,7 +14,6 @@ import java.util.HashMap;
 public class EditDetails extends javax.swing.JFrame {
 
     Customer cust;
-    HashMap<String, Customer> customers;
     DBManager db;
     
     /**
@@ -27,10 +26,9 @@ public class EditDetails extends javax.swing.JFrame {
     /**
      * Creates new form EditDetails
      */
-    public EditDetails(Customer cust, HashMap<String, Customer> customers) {
+    public EditDetails(Customer cust) {
         initComponents();
         this.cust = cust;
-        this.customers = customers;
         userNameTxtBx.setText(cust.getUsername());
         userNameTxtBx.enable(false);
         passwordTxtBx.setText(cust.getPassword());
@@ -235,7 +233,7 @@ public class EditDetails extends javax.swing.JFrame {
         HashMap<Integer, Order> orders = new HashMap<>();
         newCust = new Customer(userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);     
         db.updateCustomer(cust, newCust);
-        customers.put(newCust.getUsername(), newCust);
+
         titleLbl.setText("User Updated");
         cust = newCust;
     }//GEN-LAST:event_submitBtnActionPerformed
@@ -253,7 +251,7 @@ public class EditDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
-        CustomerHome home = new CustomerHome(customers, cust);
+        CustomerHome home = new CustomerHome(cust);
         home.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backToLoginBtnActionPerformed

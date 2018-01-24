@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 public class ViewBasket extends javax.swing.JFrame {
 
     Customer cust;
-    HashMap<String, Customer> customers;
     HashMap<Integer, OrderLine> basket;
     
 
@@ -42,18 +41,7 @@ public class ViewBasket extends javax.swing.JFrame {
     }
     
 
-    
-    public ViewBasket(Customer cust, HashMap<String, Customer> customers, HashMap<Integer,OrderLine> basket)
-    {
-        initComponents();
-        this.cust = cust;
-        this.customers = customers;
-        this.basket = basket;
-       
-
-        fillTable();
-       
-    }
+   
     
     public ViewBasket(Customer cust,HashMap<Integer,OrderLine> basket)
     {
