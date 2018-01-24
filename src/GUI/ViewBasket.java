@@ -49,15 +49,10 @@ public class ViewBasket extends javax.swing.JFrame {
         this.cust = cust;
         this.customers = customers;
         this.basket = basket;
-        
-        if(basket.isEmpty())
-        {
-            infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
-        }
-        else
-        { 
-           fillTable();
-        }
+       
+
+        fillTable();
+       
     }
     
     public ViewBasket(Customer cust,HashMap<Integer,OrderLine> basket)
@@ -80,17 +75,24 @@ public class ViewBasket extends javax.swing.JFrame {
     {
     DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
     
+    double total = 0;
     
-    basket.keySet().stream().map((key) -> {
+    for(Integer key : basket.keySet())
+    {
         String[] data = new String[4];
+        double price = basket.get(key).getProduct().getPrice();
         data[0] = "" + basket.get(key).getProduct().getProductID() + "";
         data[1] = "" + basket.get(key).getProduct().getProductName() + "";
-        data[2] = "" + basket.get(key).getProduct().getPrice() + "";
+        data[2] = "£" + String.format("%.2f", price);
         data[3] = "" + basket.get(key).getQuantity() + "";
-            return data;
-        }).forEachOrdered((data) -> {
-            tableModel.addRow(data);
-        });
+     
+        total = total + (basket.get(key).getProduct().getPrice() * basket.get(key).getQuantity());
+        
+        tableModel.addRow(data);
+    }
+    
+    totValueLbl.setText("£" + String.format("%.2f", total));
+        
     bsktTbl.setModel(tableModel);
     }
     
@@ -177,7 +179,9 @@ public class ViewBasket extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // TODO add your handling code here:
+        ViewProducts view = new ViewProducts(cust, basket);
+        this.dispose();
+        view.setVisible(true);        
     }//GEN-LAST:event_addBtnActionPerformed
 
     /**

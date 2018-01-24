@@ -7,6 +7,7 @@ package GUI;
 
 import Classes.*;
 import java.util.HashMap;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -143,6 +144,11 @@ public class ViewProducts extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(categoryList);
 
+        productList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                productListValueChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(productList);
 
         quantityLbl.setText("QUANTITY:");
@@ -219,6 +225,7 @@ public class ViewProducts extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
+
         if(categoryList.getSelectedValue().equals("Clothing"))
         {
             DBManager db = new DBManager();
@@ -241,37 +248,63 @@ public class ViewProducts extends javax.swing.JFrame {
             });
             productList.setModel(dlm);
         }
+        
+
     }//GEN-LAST:event_categoryListValueChanged
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        if(categoryList.getSelectedValue() != null)
+        {
+            if(productList.getSelectedValue() != null)
+            {
+                DefaultListModel dlm;
+                int index = productList.getSelectedIndex();
+                dlm = (DefaultListModel)productList.getModel();
+                Product p = (Product)dlm.getElementAt(index);
+                int quantity = quantityDD.getSelectedIndex()+1;
 
-            DefaultListModel dlm;
-            int index = productList.getSelectedIndex();
-            dlm = (DefaultListModel)productList.getModel();
-            Product p = (Product)dlm.getElementAt(index);
-            int quantity = quantityDD.getSelectedIndex()+1;
-            
-            DBManager db = new DBManager();
-            
-            OrderLine ol = new OrderLine(db.getNextOrderLineID(), p, quantity ,(p.getPrice()*quantity));
-                    
-            db.saveOrderLine(ol);
-            
-            int id = ol.getProductLineID();
-            
-            basket.put(id, ol);
-            
-            infoBox("Items have been added to your basket!","BASKET");
-            
+                DBManager db = new DBManager();
+
+                OrderLine ol = new OrderLine(db.getNextOrderLineID(), p, quantity ,(p.getPrice()*quantity));
+
+                db.saveOrderLine(ol);
+
+                int id = ol.getProductLineID();
+
+                basket.put(id, ol);
+
+                infoBox("Items have been added to your basket!","BASKET");
+        
+            }
+            else
+            {
+                 infoBox("Please select an item!","BASKET");
+            }
+        }
+        else
+        {
+            infoBox("Please select a category!","BASKET");
+        }
     
     }//GEN-LAST:event_addBtnActionPerformed
 
+    
+    
     private void basketBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basketBtnActionPerformed
+        if(!basket.isEmpty())
+        {
         ViewBasket vb = new ViewBasket(cust, basket);
         this.dispose();
         vb.setVisible(true);
+        }
+        else
+        {       
+            infoBox("The basket is empty!","BASKET");
+        }
     }//GEN-LAST:event_basketBtnActionPerformed
 
+    
+    
     private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
         if(cust == null)
         {
@@ -287,6 +320,37 @@ public class ViewProducts extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_returnBtnActionPerformed
 
+    
+    
+    private void productListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_productListValueChanged
+        DefaultListModel dlm;
+        int index = productList.getSelectedIndex();
+        dlm = (DefaultListModel)productList.getModel();
+        Product p = (Product)dlm.getElementAt(index);
+        
+        if(p.getStockLevel() != 0)
+        {
+            quantityDD.setEnabled(true);
+            String[] quantity = new String[p.getStockLevel()];
+
+            for (int i = 1; i <= p.getStockLevel(); i++)
+            {
+                quantity[i-1] = "" + i;
+            }
+
+            DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
+            quantityDD.setModel(dcbm);
+        }
+        else
+        {
+            quantityDD.setEnabled(false);
+            infoBox("This item is out of stock!","BASKET");
+        }
+        
+    }//GEN-LAST:event_productListValueChanged
+
+    
+    
     /**
      * @param args the command line arguments
      */
