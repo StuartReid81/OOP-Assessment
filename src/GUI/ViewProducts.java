@@ -75,6 +75,7 @@ public class ViewProducts extends javax.swing.JFrame {
         initComponents();
         
         this.cust = cust;
+        basket = new HashMap<>();
         
         categoryList.setVisibleRowCount(2);
         categoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -330,6 +331,7 @@ public class ViewProducts extends javax.swing.JFrame {
         
         if(p.getStockLevel() != 0)
         {
+            addBtn.setEnabled(true);
             quantityDD.setEnabled(true);
             String[] quantity = new String[p.getStockLevel()];
 
@@ -343,6 +345,7 @@ public class ViewProducts extends javax.swing.JFrame {
         }
         else
         {
+            addBtn.setEnabled(false);
             quantityDD.setEnabled(false);
             infoBox("This item is out of stock!","BASKET");
         }
