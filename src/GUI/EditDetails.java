@@ -15,6 +15,7 @@ public class EditDetails extends javax.swing.JFrame {
 
     Customer cust;
     DBManager db;
+    HashMap<Integer, OrderLine> basket;
     
     /**
      * Creates new form EditDetails
@@ -25,9 +26,12 @@ public class EditDetails extends javax.swing.JFrame {
 
     /**
      * Creates new form EditDetails
+     * @param cust
+     * @param basket
      */
-    public EditDetails(Customer cust) {
+    public EditDetails(Customer cust, HashMap<Integer, OrderLine> basket) {
         initComponents();
+        this.basket = basket;
         this.cust = cust;
         userNameTxtBx.setText(cust.getUsername());
         userNameTxtBx.enable(false);
@@ -251,7 +255,7 @@ public class EditDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
-        CustomerHome home = new CustomerHome(cust);
+        CustomerHome home = new CustomerHome(cust, basket);
         home.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backToLoginBtnActionPerformed

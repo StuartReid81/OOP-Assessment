@@ -53,6 +53,11 @@ public class ViewProducts extends javax.swing.JFrame {
         
         fillCategoryList();
         
+        if(basket == null)
+        {
+            this.basket = new HashMap<>();
+        }
+        
         if (cust == null)
         {
             returnBtn.setText("Return to Main Menu");
@@ -231,13 +236,19 @@ public class ViewProducts extends javax.swing.JFrame {
             //maps clothing to the HashMap returned from the DB
             clothing = db.loadAllClothing();         
             
-            //loops the HashMap adding each product to our list model
-            clothing.values().forEach((c) -> {
-                dlm.addElement(c);
-            });    
-            
+            //checking if hashmap isn't empty
+            if(!clothing.isEmpty())
+            {
+                //loops the HashMap adding each product to our list model
+                clothing.values().forEach((c) -> {
+                    dlm.addElement(c);
+                });    
+            }
+                
+                
             //passed the list model to the list for display
             productList.setModel(dlm);
+            
         }
         
         //if list box selection equals footwear
@@ -251,13 +262,18 @@ public class ViewProducts extends javax.swing.JFrame {
             //maps footwear to the HashMap returned from the DB
             footwear = db.loadAllFootwear();
             
-            //loops the HashMap adding each product to our list model
-            footwear.values().forEach((c) -> {
-                dlm.addElement(c);
-            });
+            //checking if hashmap isn't empty
+            if(!footwear.isEmpty())
+            {
+                //loops the HashMap adding each product to our list model
+                footwear.values().forEach((c) -> {
+                    dlm.addElement(c);
+                });
+            }
             
             //passed the list model to the list for display
-            productList.setModel(dlm);
+            productList.setModel(dlm);  
+            
         }
     }//GEN-LAST:event_categoryListValueChanged
 
@@ -357,20 +373,47 @@ public class ViewProducts extends javax.swing.JFrame {
         //if no customer is logged in
         if(cust == null)
         {
-            //create new menu form
-            Menu menu = new Menu();
             
-            //close current form
-            this.dispose();
+            //if basket is empty
+            if(basket == null || basket.isEmpty())
+            {
+                //create new menu form
+                Menu menu = new Menu();
+
+                //close current form
+                this.dispose();
+
+                //make new form visible
+                menu.setVisible(true);
+            }
             
-            //make new form visible
-            menu.setVisible(true);
+            //if there are items in the basket
+            else
+            {
+                //creating a confirmation dialogue and storeing the result to int o
+                int o = JOptionPane.showConfirmDialog(null, "You have items in the basket, you will lose these if you return to the main menu!\nDo you wish to return to the menu?","BASKET",JOptionPane.YES_NO_OPTION);
+                
+                //if user selects yes
+                if(o == 0)
+                {
+                    
+                    //create new menu form
+                    Menu menu = new Menu();
+
+                    //close current form
+                    this.dispose();
+
+                    //make new form visible
+                    menu.setVisible(true);
+                }
+            }
         }
+        
         //if customer is logged in
         else
         {
             //create instance of our customer home form passing our cust variable to the new form
-            CustomerHome custhome = new CustomerHome(cust);
+            CustomerHome custhome = new CustomerHome(cust, basket);
             
             //close existing form
             this.dispose();
@@ -396,40 +439,46 @@ public class ViewProducts extends javax.swing.JFrame {
         //gets list model and stores to our variable
         dlm = (DefaultListModel)productList.getModel();
         
-        //gets the product selected and stores it to p
-        Product p = (Product)dlm.getElementAt(index);
-        
-        //checks is the product is in stock
-        if(p.getStockLevel() != 0)
+        //checks to make sure dlm is not empty
+        if(!dlm.isEmpty())
         {
-            //enables our add button and drop down
-            addBtn.setEnabled(true);
-            quantityDD.setEnabled(true);
             
-            //creates a string array the size of our stock level
-            String[] quantity = new String[p.getStockLevel()];
+            //gets the product selected and stores it to p
+            Product p = (Product)dlm.getElementAt(index);
 
-            //loops from 1 to our stock level adding each number to our array
-            for (int i = 1; i <= p.getStockLevel(); i++)
+            //checks is the product is in stock
+            if(p.getStockLevel() != 0)
             {
-                quantity[i-1] = "" + i;
+                //enables our add button and drop down
+                addBtn.setEnabled(true);
+                quantityDD.setEnabled(true);
+
+                //creates a string array the size of our stock level
+                String[] quantity = new String[p.getStockLevel()];
+
+                //loops from 1 to our stock level adding each number to our array
+                for (int i = 1; i <= p.getStockLevel(); i++)
+                {
+                    quantity[i-1] = "" + i;
+                }
+
+                //stores the array to a combobox model
+                DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
+
+                ///sets the model to our combo box for display
+                quantityDD.setModel(dcbm);
             }
 
-            //stores the array to a combobox model
-            DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
-            
-            ///sets the model to our combo box for display
-            quantityDD.setModel(dcbm);
-        }
-        //if there is no stock
-        else
-        {
-            //disables our add button and dropdown
-            addBtn.setEnabled(false);
-            quantityDD.setEnabled(false);
-            
-            //displays error message pop up for user
-            infoBox("This item is out of stock!","BASKET");
+            //if there is no stock
+            else
+            {
+                //disables our add button and dropdown
+                addBtn.setEnabled(false);
+                quantityDD.setEnabled(false);
+
+                //displays error message pop up for user
+                infoBox("This item is out of stock!","BASKET");
+            }
         }
     }//GEN-LAST:event_productListValueChanged
 

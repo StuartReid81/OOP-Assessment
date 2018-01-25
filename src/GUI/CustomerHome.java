@@ -5,6 +5,7 @@
  */
 package GUI;
 import Classes.*;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +18,7 @@ public class CustomerHome extends javax.swing.JFrame {
     //attributes
     Customer cust;
     DBManager db;
+    HashMap<Integer, OrderLine> basket;
     
     /**
      * Creates new form CustomerHome
@@ -32,6 +34,18 @@ public class CustomerHome extends javax.swing.JFrame {
     public CustomerHome(Customer cust) {
         initComponents();
         this.cust = cust;
+    }
+    
+    /**
+     * Creates new form CustomerHome
+     * @param cust
+     * @param basket 
+     */
+    public CustomerHome(Customer cust, HashMap<Integer, OrderLine> basket)
+    {
+        initComponents();
+        this.cust = cust;
+        this.basket = basket;
     }
 
 
@@ -129,25 +143,33 @@ public class CustomerHome extends javax.swing.JFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        EditDetails edt = new EditDetails(cust);
+        EditDetails edt = new EditDetails(cust, basket);
         this.dispose();
         edt.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void unregBnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unregBnActionPerformed
-        welcomeLbl.setText("You heve been de-registered!");
-        db = new DBManager();
-        db.deleteCustomer(cust);
-
-        infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
         
-        Menu mnu = new Menu();
-        this.dispose();
-        mnu.setVisible(true);
+        //creating a confirmation dialogue and storeing the result to int o
+        int o = JOptionPane.showConfirmDialog(null, "This will permanently delete your account!\nDo you wish to continue?","DELETE USER!",JOptionPane.YES_NO_OPTION);
+                
+        //if user selects yes
+        if(o == 0)
+        {
+            welcomeLbl.setText("You heve been de-registered!");
+            db = new DBManager();
+            db.deleteCustomer(cust);
+
+            infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
+
+            Menu mnu = new Menu();
+            this.dispose();
+            mnu.setVisible(true);
+        }
     }//GEN-LAST:event_unregBnActionPerformed
 
     private void browseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBtnActionPerformed
-        ViewProducts view = new ViewProducts(cust);
+        ViewProducts view = new ViewProducts(cust, basket);
         this.dispose();
         view.setVisible(true);
     }//GEN-LAST:event_browseBtnActionPerformed
