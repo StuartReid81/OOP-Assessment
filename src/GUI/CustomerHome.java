@@ -79,6 +79,11 @@ public class CustomerHome extends javax.swing.JFrame {
         });
 
         viewOrdersBtn.setText("VIEW MY ORDERS");
+        viewOrdersBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewOrdersBtnActionPerformed(evt);
+            }
+        });
 
         editBtn.setText("EDIT DETAILS");
         editBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -181,6 +186,10 @@ public class CustomerHome extends javax.swing.JFrame {
         this.dispose();
         mnu.setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void viewOrdersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewOrdersBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_viewOrdersBtnActionPerformed
 
     /**
      * @param args the command line arguments
