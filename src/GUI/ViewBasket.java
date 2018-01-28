@@ -59,27 +59,42 @@ public class ViewBasket extends javax.swing.JFrame {
         }
     }
 
+    
+    private void calcTotal()
+    {
+        double total = 0;
+        
+        for(Integer key : basket.keySet())
+        {
+            total = total + (basket.get(key).getProduct().getPrice() * basket.get(key).getQuantity());
+        }
+        
+        totValueLbl.setText("£" + String.format("%.2f", total));
+    }
+    
+    
     private void fillTable()
     {
     DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
     
     double total = 0;
     
+    
     for(Integer key : basket.keySet())
     {
-        String[] data = new String[4];
+        String[] data = new String[5];
         double price = basket.get(key).getProduct().getPrice();
-        data[0] = "" + basket.get(key).getProduct().getProductID() + "";
-        data[1] = "" + basket.get(key).getProduct().getProductName() + "";
-        data[2] = "£" + String.format("%.2f", price);
-        data[3] = "" + basket.get(key).getQuantity() + "";
-     
-        total = total + (basket.get(key).getProduct().getPrice() * basket.get(key).getQuantity());
+        data[0] = "" + basket.get(key).getProductLineID();
+        data[1] = "" + basket.get(key).getProduct().getProductID() + "";
+        data[2] = "" + basket.get(key).getProduct().getProductName() + "";
+        data[3] = "£" + String.format("%.2f", price);
+        data[4] = "" + basket.get(key).getQuantity() + "";
+
         
         tableModel.addRow(data);
     }
     
-    totValueLbl.setText("£" + String.format("%.2f", total));
+    calcTotal();
         
     bsktTbl.setModel(tableModel);
     }
@@ -109,7 +124,7 @@ public class ViewBasket extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Product ID", "Product", "Price", "Quantity"
+                "Row ID", "Product ID", "Product", "Price", "Quantity"
             }
         ));
         jScrollPane1.setViewportView(bsktTbl);
@@ -122,6 +137,11 @@ public class ViewBasket extends javax.swing.JFrame {
         });
 
         removeBtn.setText("REMOVE SELECTED PRODUCTS");
+        removeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBtnActionPerformed(evt);
+            }
+        });
 
         buyBtn.setText("BUY");
 
@@ -167,11 +187,35 @@ public class ViewBasket extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    
+    
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         ViewProducts view = new ViewProducts(cust, basket);
         this.dispose();
         view.setVisible(true);        
     }//GEN-LAST:event_addBtnActionPerformed
+
+    
+    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
+        DefaultTableModel dtm = (DefaultTableModel)bsktTbl.getModel();
+        if(dtm.getRowCount() != 0)
+        {
+        
+        int row = bsktTbl.getSelectedRow();
+        String idValue = bsktTbl.getValueAt(row, 0).toString();
+        int id = Integer.parseInt(idValue);
+        basket.remove(id);
+        dtm.removeRow(row);
+        bsktTbl.setModel(dtm);
+        calcTotal();
+        }
+        else
+        {
+            infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
+        }
+    }//GEN-LAST:event_removeBtnActionPerformed
 
     /**
      * @param args the command line arguments

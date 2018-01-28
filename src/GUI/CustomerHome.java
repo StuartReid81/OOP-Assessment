@@ -187,8 +187,12 @@ public class CustomerHome extends javax.swing.JFrame {
         mnu.setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
 
+    
+    
     private void viewOrdersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewOrdersBtnActionPerformed
-        // TODO add your handling code here:
+        ViewOrders viewO = new ViewOrders(cust, basket);
+        this.dispose();
+        viewO.setVisible(true);
     }//GEN-LAST:event_viewOrdersBtnActionPerformed
 
     /**
