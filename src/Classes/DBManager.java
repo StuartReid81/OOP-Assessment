@@ -306,6 +306,33 @@ public class DBManager {
     }
     
     
+    public int getNextOrderID()
+    {
+        int next = 1;
+        
+        try
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select MAX(ORDERID) From ORDERSTABLE";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+            
+            if(rst.next())
+            {
+                next = rst.getInt(1);              
+                next++;
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+
+        return next;
+    }
+    
+    
     public int getNextOrderLineID()
     {
         int next = 1;
@@ -320,8 +347,8 @@ public class DBManager {
                 
             if(rst.next())
             {
-                    next = rst.getInt(1);              
-                    next++;
+                next = rst.getInt(1);              
+                next++;
                 
             }
         } catch (ClassNotFoundException | SQLException ex) {
@@ -566,5 +593,21 @@ public class DBManager {
             System.out.println(message);
         }
         return cust;
+    }
+    
+    
+    public void saveOrder(Order order)
+    {
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                Statement stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT INTO ORDERSTABLE (ORDERID, CUSTID, ORDERDATE, ORDERTOTAL, STATUS) VALUES ('" + order.getOrderID() + "', '" + order.getCustID() + "', '" + order.getOrderDate() + "', '" + order.getOrderTotal() + "', '" + order.getStatus() + ",)");
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
     }
 }

@@ -7,6 +7,7 @@ package GUI;
 
 import Classes.*;
 import java.util.HashMap;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,6 +22,7 @@ public class ViewOrders extends javax.swing.JFrame {
      */
     public ViewOrders() {
         initComponents();
+        fillTable();
     }
     
     
@@ -28,7 +30,7 @@ public class ViewOrders extends javax.swing.JFrame {
      * Creates new form ViewOrders
      * @param cust takes in our logged in customer as a parameter
      */
-    public ViewOrders(Customer cust){initComponents(); this.cust = cust;}
+    public ViewOrders(Customer cust){initComponents(); this.cust = cust; fillTable();}
     
     
     /**
@@ -36,8 +38,29 @@ public class ViewOrders extends javax.swing.JFrame {
      * @param cust takes in our logged in customer as a parameter
      * @param basket takes in our basket - not used in this class but for continuity
      */
-    public ViewOrders(Customer cust, HashMap<Integer, OrderLine> basket){initComponents(); this.cust = cust; this.basket = basket;}
+    public ViewOrders(Customer cust, HashMap<Integer, OrderLine> basket){initComponents(); this.cust = cust; this.basket = basket; fillTable();}
 
+    
+    private void fillTable()
+    {
+        DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        HashMap<Integer, Order> orders = cust.getOrders();
+        
+        for(Integer key : orders.keySet())
+        {
+            String[] data = new String[3];
+            double price = orders.get(key).getOrderTotal();
+            data[0] = "" + orders.get(key).getOrderID();
+            data[1] = "" + orders.get(key).getOrderDate();
+            data[2] = "£" + String.format("%.2f", price);
+
+            dtm.addRow(data);
+        }
+        
+        orderTbl.setModel(dtm);
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,7 +90,7 @@ public class ViewOrders extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Order Number", "Date", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {

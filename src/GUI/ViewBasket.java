@@ -144,6 +144,11 @@ public class ViewBasket extends javax.swing.JFrame {
         });
 
         buyBtn.setText("BUY");
+        buyBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buyBtnActionPerformed(evt);
+            }
+        });
 
         totHeadingLbl.setText("TOTAL:");
 
@@ -216,6 +221,10 @@ public class ViewBasket extends javax.swing.JFrame {
             infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
         }
     }//GEN-LAST:event_removeBtnActionPerformed
+
+    private void buyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buyBtnActionPerformed
 
     /**
      * @param args the command line arguments
