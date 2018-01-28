@@ -57,6 +57,22 @@ public class OrderLine {
         this.quantity = quantity;
         this.lineTotal = lineTotal;
     }
+    
+        /**
+     * 
+     * This is the overloaded constructor for our OrderLine class, it takes in parameters and sets them as the
+     * instances attributes.
+     * @param product this value is an instance of the Product class that we store to our product attribute.
+     * @param quantity this is an int value that we store to our quantity attribute.
+     * @param lineTotal this is a double that we store to our lineTotal attribute.
+     */
+    public OrderLine(Product product, int quantity, double lineTotal)
+    {
+        this.product = product;
+        this.quantity = quantity;
+        this.lineTotal = lineTotal;
+    }
+    
 }   
 
 

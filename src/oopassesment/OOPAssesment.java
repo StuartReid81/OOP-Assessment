@@ -5,6 +5,8 @@
  */
 package oopassesment;
 import GUI.*;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 
 /**
@@ -18,6 +20,14 @@ public class OOPAssesment {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        try {
+            // select Look and Feel
+            UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+            // start application
+        }
+        catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException ex) {
+        }
+
         Menu menu = new Menu();
         menu.setVisible(true);
     }

@@ -15,7 +15,6 @@ import java.util.HashMap;
 public class Register extends javax.swing.JFrame {
 
     Customer cust;
-    HashMap<String, Customer> customers;
     DBManager db;
     
     /**
@@ -23,21 +22,15 @@ public class Register extends javax.swing.JFrame {
      */
     public Register() {
         initComponents();
-        customers = new HashMap<>();
     }
     
-    public Register(Customer cust, HashMap<String, Customer> customers)
+    public Register(Customer cust)
     {
         initComponents();
         this.cust = cust;
-        this.customers = customers;
     }
 
-        public Register(HashMap<String, Customer> customers)
-    {
-        initComponents();
-        this.customers = customers;
-    }
+
         
     /**
      * This method is called from within the constructor to initialise the form.
@@ -71,6 +64,7 @@ public class Register extends javax.swing.JFrame {
         backToLoginBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
 
         titleLbl.setText("Register New Customer");
 
@@ -223,8 +217,8 @@ public class Register extends javax.swing.JFrame {
         if(db.findCustomer(userNameTxtBx.getText())== null)
         {
             HashMap<Integer, Order> orders = new HashMap<>();
-            newCust = new Customer(userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
-            customers.put(newCust.getUsername(), newCust);
+            newCust = new Customer(userNameTxtBx.getText().toLowerCase(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
+
             db.saveCustomer(newCust);
             titleLbl.setText("User Created");
         }
@@ -247,7 +241,7 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
-        CustomerLogin login = new CustomerLogin(customers);
+        CustomerLogin login = new CustomerLogin();
         login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backToLoginBtnActionPerformed

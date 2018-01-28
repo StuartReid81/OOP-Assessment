@@ -73,16 +73,5 @@ public class Product {
     }
     
     //methods
-    
-    /**
-     * this method takes in the values of our product and concatenates it in to a string
-     * @return returns a string holding the attribute values of our product.
-     */
-    
-    
-    @Override
-    public String toString()
-    {
-        return "" + productID + " " + productName + " " + price + " " + stockLevel + "";
-    }
+    //public abstract String productToString();
 }

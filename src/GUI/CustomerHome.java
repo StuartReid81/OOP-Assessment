@@ -16,37 +16,40 @@ import javax.swing.JOptionPane;
 public class CustomerHome extends javax.swing.JFrame {
 
     //attributes
-    HashMap<String, Customer> customers;
     Customer cust;
     DBManager db;
+    HashMap<Integer, OrderLine> basket;
     
     /**
      * Creates new form CustomerHome
      */
     public CustomerHome() {
         initComponents();
-        customers = new HashMap<>();
     }
     
     /**
      * Creates new form CustomerHome
-     * @param customers
      * @param cust 
      */
-    public CustomerHome(HashMap<String, Customer> customers, Customer cust) {
+    public CustomerHome(Customer cust) {
         initComponents();
-        this.customers = customers;
         this.cust = cust;
     }
-
+    
     /**
      * Creates new form CustomerHome
-     * @param customers 
+     * @param cust
+     * @param basket 
      */
-    public CustomerHome(HashMap<String, Customer> customers) {
+    public CustomerHome(Customer cust, HashMap<Integer, OrderLine> basket)
+    {
         initComponents();
-        this.customers = customers;
+        this.cust = cust;
+        this.basket = basket;
     }
+
+
+    
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,12 +67,23 @@ public class CustomerHome extends javax.swing.JFrame {
         logoutBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
 
         welcomeLbl.setText("Welcome");
 
         browseBtn.setText("BROWSE PRODUCTS");
+        browseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseBtnActionPerformed(evt);
+            }
+        });
 
         viewOrdersBtn.setText("VIEW MY ORDERS");
+        viewOrdersBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewOrdersBtnActionPerformed(evt);
+            }
+        });
 
         editBtn.setText("EDIT DETAILS");
         editBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -86,6 +100,11 @@ public class CustomerHome extends javax.swing.JFrame {
         });
 
         logoutBtn.setText("LOG OUT");
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,23 +148,52 @@ public class CustomerHome extends javax.swing.JFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        EditDetails edt = new EditDetails(cust, customers);
+        EditDetails edt = new EditDetails(cust, basket);
         this.dispose();
         edt.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void unregBnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unregBnActionPerformed
-        welcomeLbl.setText("You heve been de-registered!");
-        db = new DBManager();
-        db.deleteCustomer(cust);
-        customers.remove(cust.getUsername());
-
-        infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
         
-        Menu mnu = new Menu(customers);
+        //creating a confirmation dialogue and storeing the result to int o
+        int o = JOptionPane.showConfirmDialog(null, "This will permanently delete your account!\nDo you wish to continue?","DELETE USER!",JOptionPane.YES_NO_OPTION);
+                
+        //if user selects yes
+        if(o == 0)
+        {
+            welcomeLbl.setText("You heve been de-registered!");
+            db = new DBManager();
+            db.deleteCustomer(cust);
+
+            infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
+
+            Menu mnu = new Menu();
+            this.dispose();
+            mnu.setVisible(true);
+        }
+    }//GEN-LAST:event_unregBnActionPerformed
+
+    private void browseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBtnActionPerformed
+        ViewProducts view = new ViewProducts(cust, basket);
+        this.dispose();
+        view.setVisible(true);
+    }//GEN-LAST:event_browseBtnActionPerformed
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        cust = null;
+        infoBox("You have been logged out!\nClose this window to return to the main menu.","USER STATUS");
+        Menu mnu = new Menu(cust);
         this.dispose();
         mnu.setVisible(true);
-    }//GEN-LAST:event_unregBnActionPerformed
+    }//GEN-LAST:event_logoutBtnActionPerformed
+
+    
+    
+    private void viewOrdersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewOrdersBtnActionPerformed
+        ViewOrders viewO = new ViewOrders(cust, basket);
+        this.dispose();
+        viewO.setVisible(true);
+    }//GEN-LAST:event_viewOrdersBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,7 +230,7 @@ public class CustomerHome extends javax.swing.JFrame {
         });
     }
 
-        public static void infoBox(String infoMessage, String titleBar)
+    public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
     }
