@@ -6,6 +6,9 @@
 package GUI;
 
 import Classes.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -228,7 +231,16 @@ public class ViewBasket extends javax.swing.JFrame {
         }
         else
         {
+            DBManager db = new DBManager();
             
+            Date date = new Date();
+            
+            Order ord = new Order(db.getNextOrderID(),cust.getUserID(), date, Double.parseDouble(totValueLbl.getText()), "Paid", basket);
+            
+            db.saveOrder(ord);
+            
+            cust.addOrder(ord);
+
             Confirmation conf = new Confirmation (cust);
             this.dispose();
             conf.setVisible(true);

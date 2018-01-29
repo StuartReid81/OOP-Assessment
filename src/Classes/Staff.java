@@ -38,6 +38,7 @@ public class Staff extends User{
     
     /**
      * This is an overloaded constructor taking in parameters and creating an instance of our staff member with them.
+     * @param userID this sets our userID that we pass in to the constructor for our user class.
      * @param username this sets the username that we pass in to the constructor of our user class.
      * @param password this sets the password that we pass in to the constructor of our user class.
      * @param firstName this sets the first name that we pass in to the constructor of our user class.
@@ -45,9 +46,9 @@ public class Staff extends User{
      * @param position this is used to set our staff members position attribute.
      * @param salary this is used to set our staff members salary attribute.
      */
-    public Staff(String username, String password, String firstName, String lastName, String position, double salary)
+    public Staff(int userID, String username, String password, String firstName, String lastName, String position, double salary)
     {
-        super(username, password, firstName, lastName);
+        super(userID, username, password, firstName, lastName);
         this.position = position;
         this.salary = salary;
     }

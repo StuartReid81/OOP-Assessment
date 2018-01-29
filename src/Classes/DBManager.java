@@ -360,6 +360,33 @@ public class DBManager {
     }
     
     
+        public int getNextUserID()
+    {
+        int next = 1;
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select MAX(USERID) From CUSTOMERSTABLE c, STAFFTABLE s";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                next = rst.getInt(1);              
+                next++;
+                
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        
+        return next;
+    }
+    
+    
     public void saveOrderLine(OrderLine ol)
     {
         try 
@@ -451,7 +478,7 @@ public class DBManager {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
                 Statement stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT INTO CUSTOMERSTABLE (USERNAME, PASSWORD, FIRSTNAME, LASTNAME, ADDRESSLINE1, ADDRESSLINE2, TOWN, POSTCODE, ISREGISTERED) VALUES ('" + cust.getUsername() + "' , '" + cust.getPassword() + "', '" + cust.getFirstName() + "', '" + cust.getLastName() + "', '" + cust.getAddressLine1() + "', '" + cust.getAddressLine2() + "', '" + cust.getTown() + "', '" + cust.getPostcode() + "', '" + cust.getIsRegistered() + "')" );
+                stmt.executeUpdate("INSERT INTO CUSTOMERSTABLE (USERID, USERNAME, PASSWORD, FIRSTNAME, LASTNAME, ADDRESSLINE1, ADDRESSLINE2, TOWN, POSTCODE, ISREGISTERED) VALUES (" + cust.getUserID() + " , '" + cust.getUsername() + "' , '" + cust.getPassword() + "', '" + cust.getFirstName() + "', '" + cust.getLastName() + "', '" + cust.getAddressLine1() + "', '" + cust.getAddressLine2() + "', '" + cust.getTown() + "', '" + cust.getPostcode() + "', '" + cust.getIsRegistered() + "')" );
             }
 
         } catch (ClassNotFoundException | SQLException ex) {

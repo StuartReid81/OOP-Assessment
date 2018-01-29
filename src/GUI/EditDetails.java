@@ -235,7 +235,7 @@ public class EditDetails extends javax.swing.JFrame {
         db = new DBManager();
 
         HashMap<Integer, Order> orders = new HashMap<>();
-        newCust = new Customer(userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);     
+        newCust = new Customer(cust.getUserID(), userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);     
         db.updateCustomer(cust, newCust);
 
         titleLbl.setText("User Updated");

@@ -45,6 +45,7 @@ public class Customer extends User {
 
     /**
      * Overloaded constructor taking in parameters to define an instance of the customer class.
+     * @param userID this sets the userID that we pass in to the constructor of our user class.
      * @param username this sets the username that we pass in to the constructor of our user class.
      * @param password this sets the password that we pass in to the constructor of our user class.
      * @param firstName this sets the first name that we pass in to the constructor of our user class.
@@ -56,9 +57,9 @@ public class Customer extends User {
      * @param orders this is a HashMap of all the orders the customer has placed.
      * @param isRegistered this value is a boolean confirming true if the customer is registered.
      */
-    public Customer(String username, String password, String firstName, String lastName, String addressLine1, String addressLine2, String town, String postcode, HashMap<Integer, Order> orders, boolean isRegistered)
+    public Customer(int userID, String username, String password, String firstName, String lastName, String addressLine1, String addressLine2, String town, String postcode, HashMap<Integer, Order> orders, boolean isRegistered)
     {
-        super(username, password, firstName, lastName);
+        super(userID, username, password, firstName, lastName);
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.town = town;
@@ -76,9 +77,7 @@ public class Customer extends User {
     
     public void addOrder(Order o)
     {
-        int size = orders.size();
-        size++;
-        orders.put(size, o);
+        orders.put(o.getOrderID(), o);
     }
     
     
