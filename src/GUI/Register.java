@@ -16,6 +16,8 @@ public class Register extends javax.swing.JFrame {
 
     Customer cust;
     DBManager db;
+    HashMap<Integer, OrderLine> basket;
+    boolean fromBasket = false;
     
     /**
      * Creates new form Register
@@ -28,6 +30,13 @@ public class Register extends javax.swing.JFrame {
     {
         initComponents();
         this.cust = cust;
+    }
+    
+    public Register(boolean fromBasket, HashMap<Integer, OrderLine> basket)
+    {
+        initComponents();
+        this.fromBasket = fromBasket;
+        this.basket = basket;
     }
 
 
@@ -241,9 +250,19 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
-        CustomerLogin login = new CustomerLogin();
-        login.setVisible(true);
-        this.dispose();
+        
+        if(!fromBasket)
+        {
+            CustomerLogin login = new CustomerLogin();
+            login.setVisible(true);
+            this.dispose();
+        }
+        else
+        {
+            CustomerLogin login = new CustomerLogin(fromBasket, basket);
+            login.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_backToLoginBtnActionPerformed
 
     /**

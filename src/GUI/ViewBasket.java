@@ -77,8 +77,6 @@ public class ViewBasket extends javax.swing.JFrame {
     {
     DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
     
-    double total = 0;
-    
     
     for(Integer key : basket.keySet())
     {
@@ -193,9 +191,6 @@ public class ViewBasket extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-    
-    
-    
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         ViewProducts view = new ViewProducts(cust, basket);
         this.dispose();
@@ -223,7 +218,21 @@ public class ViewBasket extends javax.swing.JFrame {
     }//GEN-LAST:event_removeBtnActionPerformed
 
     private void buyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyBtnActionPerformed
-        // TODO add your handling code here:
+        if(cust == null)
+        {
+            infoBox("Please log in to process your order\nIf you do not have an account you will be required to register one!\nPlease close this box to continue.","LOGIN");
+            CustomerLogin login = new CustomerLogin(basket);
+            this.dispose();
+            login.setVisible(true);
+            
+        }
+        else
+        {
+            
+            Confirmation conf = new Confirmation (cust);
+            this.dispose();
+            conf.setVisible(true);
+        }
     }//GEN-LAST:event_buyBtnActionPerformed
 
     /**

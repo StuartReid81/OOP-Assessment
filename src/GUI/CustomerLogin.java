@@ -8,6 +8,7 @@ package GUI;
 import Classes.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -19,6 +20,8 @@ public class CustomerLogin extends javax.swing.JFrame {
 
     //attributes
     Customer cust;
+    HashMap<Integer, OrderLine> basket;
+    boolean fromBasket = false;
     
     /**
      * Default constructor that creates an empty instance of our CustomerLogin screen
@@ -31,8 +34,25 @@ public class CustomerLogin extends javax.swing.JFrame {
      * Overloaded Constructor passing in Customer instance and HashMap of Customers
      * @param cust this parameter is an instance of the customer class and is passed to the page if there is currently a customer logged in
      */
-    public CustomerLogin( Customer cust){initComponents(); this.cust = cust;}
+    public CustomerLogin(Customer cust){initComponents(); this.cust = cust;}
+    
+    
+    public CustomerLogin(HashMap<Integer, OrderLine> basket)
+    {
+        initComponents();
+        this.basket = basket;
+        mainMenuBtn.setText("RETURN TO BASKET");
+        fromBasket = true;  
+    }
 
+    
+    public CustomerLogin(boolean fromBasket, HashMap<Integer, OrderLine> basket)
+    {
+        initComponents();
+        this.fromBasket = fromBasket;
+        this.basket = basket;
+        mainMenuBtn.setText("RETURN TO BASKET");
+    }
     
     
     /**
@@ -166,10 +186,21 @@ public class CustomerLogin extends javax.swing.JFrame {
             
             if (unCorrect && pwCorrect)
             {
-                cust = myCust;
-                CustomerHome home = new CustomerHome(cust);
-                home.setVisible(true);
-                this.dispose();
+                if(!fromBasket)
+                {
+                    cust = myCust;
+                    CustomerHome home = new CustomerHome(cust);
+                    home.setVisible(true);
+                    this.dispose();
+                }
+                else
+                {
+                    cust = myCust;
+                    infoBox("You are now logged in!","LOGGED IN");
+                    ViewBasket vb = new ViewBasket(cust, basket);
+                    this.dispose();
+                    vb.setVisible(true);
+                }
             }
             else
             {
@@ -186,6 +217,12 @@ public class CustomerLogin extends javax.swing.JFrame {
             this.dispose();
             menu.setVisible(true);
         }
+        if(fromBasket)
+        {
+            ViewBasket vb = new ViewBasket(cust, basket);
+            this.dispose();
+            vb.setVisible(true);
+        }
         else
         {
             Menu menu = new Menu();
@@ -195,9 +232,19 @@ public class CustomerLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_mainMenuBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        Register reg = new Register();
-        reg.setVisible(true);
-        this.dispose();
+        
+        if(!fromBasket)
+        {
+            Register reg = new Register();
+            reg.setVisible(true);
+            this.dispose();
+        }
+        else
+        {
+            Register reg = new Register(fromBasket, basket);
+            this.dispose();
+            reg.setVisible(true);
+        }
     }//GEN-LAST:event_registerBtnActionPerformed
 
     /**
@@ -233,6 +280,11 @@ public class CustomerLogin extends javax.swing.JFrame {
         });
     }
 
+        public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton loginBtn;
     private javax.swing.JButton mainMenuBtn;
