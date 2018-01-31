@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -368,7 +370,7 @@ public class DBManager {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             Statement stmt = conn.createStatement();
-            String sql = "Select MAX(USERID) From CUSTOMERSTABLE c, STAFFTABLE s";
+            String sql = "Select MAX(USERID) From (SELECT USERID FROM CUSTOMERSTABLE UNION SELECT USERID FROM STAFFTABLE)COMBINED";
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -601,6 +603,7 @@ public class DBManager {
                 
             if(rst.next())
             {
+                cust.setUserID(rst.getInt("USERID"));
                 cust.setUserName(rst.getString("USERNAME"));
                 cust.setPassword(rst.getString("PASSWORD"));
                 cust.setFirstName(rst.getString("FIRSTNAME"));
@@ -629,7 +632,8 @@ public class DBManager {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
                 Statement stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT INTO ORDERSTABLE (ORDERID, CUSTID, ORDERDATE, ORDERTOTAL, STATUS) VALUES ('" + order.getOrderID() + "', '" + order.getCustID() + "', '" + order.getOrderDate() + "', '" + order.getOrderTotal() + "', '" + order.getStatus() + ",)");
+                String date = new SimpleDateFormat("YYYY-MM-DD").format(new Date());
+                stmt.executeUpdate("INSERT INTO ORDERSTABLE (ORDERID, CUSTID, ORDERDATE, ORDERTOTAL, STATUS)" + " VALUES (" + order.getOrderID() + ", " + order.getCustID() + ", '" + date + "', " + order.getOrderTotal() + ", '" + order.getStatus() + "')");
             }
 
         } catch (ClassNotFoundException | SQLException ex) {

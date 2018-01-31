@@ -41,7 +41,7 @@ public class Customer extends User {
     /**
      * Default constructor for our Customer class creating an instance of a customer without declaring values for is attributes.
      */
-    public Customer(){super();}
+    public Customer(){super(); orders = new HashMap<>();}
 
     /**
      * Overloaded constructor taking in parameters to define an instance of the customer class.
@@ -66,6 +66,11 @@ public class Customer extends User {
         this.postcode = postcode;
         this.orders = orders;
         this.isRegistered = isRegistered;
+        
+        if(this.orders == null);
+        {
+            this.orders = new HashMap<>();
+        }
     }
     
     //methods

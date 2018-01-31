@@ -235,7 +235,10 @@ public class ViewBasket extends javax.swing.JFrame {
             
             Date date = new Date();
             
-            Order ord = new Order(db.getNextOrderID(),cust.getUserID(), date, Double.parseDouble(totValueLbl.getText()), "Paid", basket);
+            
+            String value = totValueLbl.getText().substring(1);
+            
+            Order ord = new Order(db.getNextOrderID(),cust.getUserID(), date, Double.parseDouble(value), "Paid", basket);
             
             db.saveOrder(ord);
             
