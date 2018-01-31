@@ -399,7 +399,7 @@ public class DBManager {
             {
                 Statement stmt = conn.createStatement();
                 int id = ol.getProduct().getProductID();
-                String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
+                String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, ORDERID, PRODUCTID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getOrderID() + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
                 stmt.executeUpdate(query);
             }
 
@@ -548,6 +548,7 @@ public class DBManager {
                 while (rst.next())
                 {
                     Customer cust = new Customer();
+                    cust.setUserID(rst.getInt("USERID"));
                     cust.setUserName(rst.getString("USERNAME"));
                     cust.setPassword(rst.getString("PASSWORD"));
                     cust.setFirstName(rst.getString("FIRSTNAME"));
@@ -613,6 +614,7 @@ public class DBManager {
                 cust.setTown(rst.getString("TOWN"));
                 cust.setPostcode(rst.getString("POSTCODE"));
                 cust.setIsRegistered(rst.getBoolean("ISREGISTERED"));
+                cust.setOrders(loadCustomersOrders(cust.getUserID()));
             }
             else
             {
@@ -640,5 +642,79 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+    }
+    
+    
+    
+    
+    public HashMap<Integer, Order> loadCustomersOrders(int id)
+    {
+    
+        HashMap<Integer, Order> orders = new HashMap<>();
+        
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From ORDERSTABLE Where CUSTID = " + id + "";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            
+            
+            if(rst.next())
+            {
+                Order order = new Order();
+                order.setOrderID(rst.getInt("ORDERID"));
+                order.setCustID(rst.getInt("CUSTID"));
+                order.setOrderDate(rst.getDate("ORDERDATE"));
+                order.setStatus(rst.getString("STATUS"));
+                order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
+                order.setOrderLines(loadOrderLines(order.getOrderID()));
+                orders.put(order.getOrderID(), order);
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return orders;
+    }
+    
+        public HashMap<Integer, OrderLine> loadOrderLines(int id)
+    {
+    
+        HashMap<Integer, OrderLine> orderLines = new HashMap<>();
+        
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From ORDERLINESTABLE Where ORDERID = " + id + "";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            
+            
+            if(rst.next())
+            {
+                OrderLine ol = new OrderLine();
+                ol.setOrderID(rst.getInt("ORDERID"));
+                ol.setProductLineID(rst.getInt("ORDERLINEID"));
+                Product p = findProduct(rst.getInt("PRODUCTID"));
+                ol.setProduct(p);
+                ol.setQuantity(rst.getInt("QUANTITY"));
+                ol.setLineTotal(rst.getDouble("LINETOTAL"));
+                
+                orderLines.put(ol.getProductLineID(), ol);
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return orderLines;
     }
 }

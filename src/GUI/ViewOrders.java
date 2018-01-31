@@ -22,7 +22,10 @@ public class ViewOrders extends javax.swing.JFrame {
      */
     public ViewOrders() {
         initComponents();
+        if (!cust.getOrders().isEmpty() || cust.getOrders() != null)
+        {
         fillTable();
+        }
     }
     
     
@@ -30,16 +33,31 @@ public class ViewOrders extends javax.swing.JFrame {
      * Creates new form ViewOrders
      * @param cust takes in our logged in customer as a parameter
      */
-    public ViewOrders(Customer cust){initComponents(); this.cust = cust; fillTable();}
-    
+    public ViewOrders(Customer cust)
+    {
+        initComponents();
+        this.cust = cust; 
+        if (!cust.getOrders().isEmpty() || cust.getOrders() != null)
+        {
+        fillTable();
+        }
+    }
     
     /**
      * Creates new form ViewOrders
      * @param cust takes in our logged in customer as a parameter
      * @param basket takes in our basket - not used in this class but for continuity
      */
-    public ViewOrders(Customer cust, HashMap<Integer, OrderLine> basket){initComponents(); this.cust = cust; this.basket = basket; fillTable();}
-
+    public ViewOrders(Customer cust, HashMap<Integer, OrderLine> basket)
+    {
+        initComponents(); 
+        this.cust = cust; 
+        this.basket = basket; 
+        if (!cust.getOrders().isEmpty() || cust.getOrders() != null)
+        {
+        fillTable();
+        }
+    }
     
     private void fillTable()
     {
@@ -73,7 +91,7 @@ public class ViewOrders extends javax.swing.JFrame {
         backBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         orderTbl = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        ViewOrderBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(700, 600));
@@ -103,7 +121,12 @@ public class ViewOrders extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(orderTbl);
 
-        jButton1.setText("VIEW SELECTED ORDER");
+        ViewOrderBtn.setText("VIEW SELECTED ORDER");
+        ViewOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewOrderBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,7 +137,7 @@ public class ViewOrders extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ViewOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -125,7 +148,7 @@ public class ViewOrders extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(ViewOrderBtn)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -138,6 +161,23 @@ public class ViewOrders extends javax.swing.JFrame {
         this.dispose();
         cHome.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
+
+    private void ViewOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewOrderBtnActionPerformed
+        
+        DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        
+        int row = orderTbl.getSelectedRow();
+        
+        String idValue = dtm.getValueAt(row, 0).toString();
+        
+        int id = Integer.parseInt(idValue);
+        
+        
+        Order order = cust.getOrders().get(id);
+        ViewAnOrder vao = new ViewAnOrder(cust, order, basket);
+        this.dispose();
+        vao.setVisible(true);
+    }//GEN-LAST:event_ViewOrderBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,8 +215,8 @@ public class ViewOrders extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ViewOrderBtn;
     private javax.swing.JButton backBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable orderTbl;
     // End of variables declaration//GEN-END:variables
