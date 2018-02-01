@@ -7,6 +7,7 @@ package GUI;
 
 import Classes.*;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -163,20 +164,26 @@ public class ViewOrders extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void ViewOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewOrderBtnActionPerformed
-        
-        DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
-        
-        int row = orderTbl.getSelectedRow();
-        
-        String idValue = dtm.getValueAt(row, 0).toString();
-        
-        int id = Integer.parseInt(idValue);
-        
-        
-        Order order = cust.getOrders().get(id);
-        ViewAnOrder vao = new ViewAnOrder(cust, order, basket);
-        this.dispose();
-        vao.setVisible(true);
+        if(orderTbl.getSelectedRow() != -1)
+        {
+            DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+
+            int row = orderTbl.getSelectedRow();
+
+            String idValue = dtm.getValueAt(row, 0).toString();
+
+            int id = Integer.parseInt(idValue);
+
+
+            Order order = cust.getOrders().get(id);
+            ViewAnOrder vao = new ViewAnOrder(cust, order, basket);
+            this.dispose();
+            vao.setVisible(true);
+        }
+        else
+        {
+            infoBox("Please select the order you would like to view!","ORDERS");
+        }
     }//GEN-LAST:event_ViewOrderBtnActionPerformed
 
     /**
@@ -213,6 +220,11 @@ public class ViewOrders extends javax.swing.JFrame {
             }
         });
     }
+    
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ViewOrderBtn;

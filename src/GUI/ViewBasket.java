@@ -6,13 +6,9 @@
 package GUI;
 
 import Classes.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -202,21 +198,29 @@ public class ViewBasket extends javax.swing.JFrame {
 
     
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
-        DefaultTableModel dtm = (DefaultTableModel)bsktTbl.getModel();
-        if(dtm.getRowCount() != 0)
-        {
         
-        int row = bsktTbl.getSelectedRow();
-        String idValue = bsktTbl.getValueAt(row, 0).toString();
-        int id = Integer.parseInt(idValue);
-        basket.remove(id);
-        dtm.removeRow(row);
-        bsktTbl.setModel(dtm);
-        calcTotal();
+        if(bsktTbl.getSelectedRow() != -1)
+        {
+            DefaultTableModel dtm = (DefaultTableModel)bsktTbl.getModel();
+            if(dtm.getRowCount() != 0)
+            {
+
+            int row = bsktTbl.getSelectedRow();
+            String idValue = bsktTbl.getValueAt(row, 0).toString();
+            int id = Integer.parseInt(idValue);
+            basket.remove(id);
+            dtm.removeRow(row);
+            bsktTbl.setModel(dtm);
+            calcTotal();
+            }
+            else
+            {
+                infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
+            }
         }
         else
         {
-            infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
+            infoBox("Please select the row you would like to remove from your basket!","BASKET");
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
@@ -243,6 +247,11 @@ public class ViewBasket extends javax.swing.JFrame {
             db.saveOrder(ord);
             
             cust.addOrder(ord);
+            
+            for(int key : basket.keySet())
+            {
+                db.addOrderID(key, ord.getOrderID());
+            }
 
             Confirmation conf = new Confirmation (cust);
             this.dispose();
