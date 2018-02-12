@@ -57,7 +57,7 @@ public class Staff extends User{
     //methods
     public String displayGreeting()
     {
-        String greeting = "";
+        String greeting = "Welcome " + super.getFirstName() + " " + super.getLastName() + ". You are now logged in with " + this.position + " privileges.";
         return greeting;
     }
    

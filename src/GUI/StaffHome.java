@@ -6,6 +6,7 @@
 package GUI;
 
 import Classes.Staff;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,6 +20,7 @@ public class StaffHome extends javax.swing.JFrame {
     {
         initComponents();
         this.staff = staff;
+        welcomeLbl.setText(staff.displayGreeting());
     }
     
     /**
@@ -37,22 +39,93 @@ public class StaffHome extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        welcomeLbl = new javax.swing.JLabel();
+        modBtn = new javax.swing.JButton();
+        viewBtn = new javax.swing.JButton();
+        logoutBtn = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 600));
+
+        welcomeLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        welcomeLbl.setText("WELCOME");
+
+        modBtn.setText("MODIFY PRODUCTS");
+        modBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modBtnActionPerformed(evt);
+            }
+        });
+
+        viewBtn.setText("VIEW ALL ORDERS");
+
+        logoutBtn.setText("LOGOUT");
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(welcomeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(modBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                    .addComponent(viewBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logoutBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(welcomeLbl)
+                .addGap(68, 68, 68)
+                .addComponent(modBtn)
+                .addGap(69, 69, 69)
+                .addComponent(viewBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 219, Short.MAX_VALUE)
+                .addComponent(logoutBtn)
+                .addGap(44, 44, 44))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        
+        infoBox("You are now logged out!\nPlease Close this box to return to the main menu", "LOGGED OUT");
+        
+        Menu menu = new Menu();
+        this.dispose();
+        menu.setVisible(true);
+    }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void modBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modBtnActionPerformed
+        if(!staff.getPosition().equals("Admin"))
+        {
+            infoBox("You must be an Admin to modify products","Access Denied");
+        }
+        else
+        {
+            StaffViewProducts svp = new StaffViewProducts(staff);
+            this.dispose();
+            svp.setVisible(true);
+        }
+    }//GEN-LAST:event_modBtnActionPerformed
+
+    
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -89,5 +162,9 @@ public class StaffHome extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton logoutBtn;
+    private javax.swing.JButton modBtn;
+    private javax.swing.JButton viewBtn;
+    private javax.swing.JLabel welcomeLbl;
     // End of variables declaration//GEN-END:variables
 }
