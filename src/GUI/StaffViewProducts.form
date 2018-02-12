@@ -91,6 +91,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="RETURN TO STAFF HOME"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="titleLbl">
       <Properties>

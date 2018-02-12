@@ -64,6 +64,11 @@ public class StaffViewProducts extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(700, 600));
 
         backBtn.setText("RETURN TO STAFF HOME");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtnActionPerformed(evt);
+            }
+        });
 
         titleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleLbl.setText("EDIT PRODUCTS");
@@ -204,8 +209,16 @@ public class StaffViewProducts extends javax.swing.JFrame {
     }//GEN-LAST:event_catListValueChanged
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // TODO add your handling code here:
+        AddProduct ap = new AddProduct(staff);
+        this.dispose();
+        ap.setVisible(true);
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        StaffHome sh = new StaffHome(staff);
+        this.dispose();
+        sh.setVisible(true);
+    }//GEN-LAST:event_backBtnActionPerformed
 
     
 

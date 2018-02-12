@@ -17,53 +17,24 @@ import java.util.HashMap;
  */
 public class DBManager {
 
-    
-    
+
     //Methods for DB management of Products and subclasses
     
-    //method that takes in a Hashmap of products and iterates through it saving to relevant tables
-    public void saveAllProducts(HashMap<Integer, Product> products){
-        Product prod;
-        try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")){
-                Statement stmt = conn.createStatement();
-                
-                for(int y = 0; y< products.size(); y++)
-                {
-                    prod = products.get(y);
-                    stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES ('" + prod.getProductID() + "', '" + prod.getProductName() + "', '" + prod.getPrice() + "', '" + prod.getStockLevel() + ",)");
-                    if(prod instanceof Clothing)
-                    {
-                        stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, MEASUREMENT) VALUES ('" + prod.getProductID() + "', '" + ((Clothing) prod).getMeasurement() + ",)");
-                    }
-                    else
-                    {
-                        stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, SIZE) VALUES ('" + prod.getProductID() + "', '" + ((Footwear) prod).getSize() + ",)");
-                    }
-                }
-                
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            String message = ex.getMessage();
-            System.out.println(message);
-        }
-    }
-    
+
     //This method takes in a Product as a parameter and stores it to the relevant tables
     public void saveProduct(Product prod) {
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
                 Statement stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES ('" + prod.getProductID() + "', '" + prod.getProductName() + "', '" + prod.getPrice() + "', '" + prod.getStockLevel() + ",)");
+                stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES (" + prod.getProductID() + ", '" + prod.getProductName() + "', " + prod.getPrice() + ", " + prod.getStockLevel() + ")");
                 if(prod instanceof Clothing)
                 {
-                    stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, MEASUREMENT) VALUES ('" + prod.getProductID() + "', '" + ((Clothing) prod).getMeasurement() + ",)");
+                    stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, MEASUREMENT) VALUES (" + prod.getProductID() + ", '" + ((Clothing) prod).getMeasurement() + "')");
                 }
                 else
                 {
-                    stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, SIZE) VALUES ('" + prod.getProductID() + "', " + ((Footwear) prod).getSize() + ",)");
+                    stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, SIZE) VALUES (" + prod.getProductID() + ", " + ((Footwear) prod).getSize() + ")");
                 }
             }
 
@@ -362,7 +333,7 @@ public class DBManager {
     }
     
     
-        public int getNextUserID()
+    public int getNextUserID()
     {
         int next = 1;
         try 
@@ -691,5 +662,30 @@ public class DBManager {
             System.out.println(message);
         }
         return staff;
+    }
+
+    public int getNextProductID() {
+        int next = 1;
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select MAX(PRODUCTID) From PRODUCTSTABLE";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                next = rst.getInt(1);              
+                next++;
+                
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        
+        return next;        
     }
 }
