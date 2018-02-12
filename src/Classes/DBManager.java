@@ -660,4 +660,36 @@ public class DBManager {
         }
         return orderLines;
     }
+
+    public Staff findStaff(String inputUsername) {
+        Staff staff = new Staff();
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From STAFFTABLE Where USERNAME = '" + inputUsername.trim() + "'";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                staff.setUserID(rst.getInt("USERID"));
+                staff.setUserName(rst.getString("USERNAME"));
+                staff.setPassword(rst.getString("PASSWORD"));
+                staff.setFirstName(rst.getString("FIRSTNAME"));
+                staff.setLastName(rst.getString("LASTNAME"));
+                staff.setPosition(rst.getString("POSITION"));
+                staff.setSalary(rst.getDouble("SALARY"));
+            }
+            else
+            {
+                staff = null;
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return staff;
+    }
 }
