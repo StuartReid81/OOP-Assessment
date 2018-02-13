@@ -8,9 +8,12 @@ package GUI;
 import Classes.Clothing;
 import Classes.DBManager;
 import Classes.Footwear;
+import Classes.Product;
 import Classes.Staff;
+import static GUI.CustomerHome.infoBox;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -89,8 +92,18 @@ public class StaffViewProducts extends javax.swing.JFrame {
         jScrollPane2.setViewportView(proList);
 
         editBtn.setText("EDIT PRODUCT");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("DELETE PRODUCT");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         addBtn.setText("ADD A NEW PRODUCT");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -219,6 +232,48 @@ public class StaffViewProducts extends javax.swing.JFrame {
         this.dispose();
         sh.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+               
+        //creating a confirmation dialogue and storeing the result to int o
+        int o = JOptionPane.showConfirmDialog(null, "This will permanently delete this product from your range!\nDo you wish to continue?","DELETE PRODUCT!",JOptionPane.YES_NO_OPTION);
+        DBManager db;
+        //if user selects yes
+        if(o == 0)
+        {
+            DefaultListModel dlm = (DefaultListModel)proList.getModel();
+            
+            int index = proList.getSelectedIndex();
+            
+            Product p = (Product)dlm.getElementAt(index);
+            
+            dlm.remove(index);
+            
+            titleLbl.setText("Item Deleted!");
+            db = new DBManager();
+            db.deleteProduct(p);
+
+            infoBox("This item has been deleted!\nClose this window to continue.","PRODUCT DELETED");
+
+            proList.setModel(dlm);
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+
+            DefaultListModel dlm = (DefaultListModel)proList.getModel();
+            
+            int index = proList.getSelectedIndex();
+            
+            Product p = (Product)dlm.getElementAt(index);
+
+            boolean cloth = p instanceof Clothing;
+            
+            EditProduct ep = new EditProduct(p, staff, cloth);
+            this.dispose();
+            ep.setVisible(true);
+        
+    }//GEN-LAST:event_editBtnActionPerformed
 
     
 

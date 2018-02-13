@@ -44,20 +44,8 @@ public class DBManager {
         }
     }
     
-    //this method deletes all entries from our trio of product tables
-    public void deleteAllProducts() {
-        try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
-                Statement stmt = conn.createStatement();
-                
-                stmt.executeUpdate("DELETE * PRODUCTSTABLE; DELETE * CLOTHINGTABLE; DELETE * FOOTWEARTABLE");
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            String message = ex.getMessage();
-            System.out.println(message);
-        }
-    }
+
+    
     
     //this method deletes a single product entry
     public void deleteProduct (Product prod)
@@ -69,12 +57,18 @@ public class DBManager {
                 
             if(prod instanceof Clothing)
                 {
-                    stmt.executeUpdate("DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = '" + prod.getProductID() + "'; DELETE FROM CLOTHINGTABLE WHERE PRODUCTID = " + prod.getProductID() + "'");
+                    String sql = "DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    String sql2 =  "DELETE FROM CLOTHINGTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    stmt.executeUpdate(sql2);
+                    stmt.executeUpdate(sql);
                     
                 }
                 else
                 {
-                    stmt.executeUpdate("DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = '" + prod.getProductID() + "'; DELETE FROM FOOTWEARTABLE WHERE PRODUCTID = " + prod.getProductID() + "'");
+                    String sql = "DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    String sql2 = "DELETE FROM FOOTWEARTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    stmt.executeUpdate(sql);
+                    stmt.executeUpdate(sql2);
                 }
             }
         } catch (ClassNotFoundException | SQLException ex) {
@@ -163,7 +157,7 @@ public class DBManager {
      * @param originalCloth
      * @param newCloth 
      */
-    public void updateClothingItem (Clothing originalCloth, Clothing newCloth)
+    public void updateClothingItem (Clothing newCloth)
     {
         try {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -184,14 +178,14 @@ public class DBManager {
      * @param originalFoot
      * @param newFoot
      */
-    public void updateFootwearItem (Footwear originalFoot, Footwear newFoot)
+    public void updateFootwearItem (Footwear newFoot)
     {
         try {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
                     Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PROCUCTNAME = '" + newFoot.getProductName() + "', PRICE = '" + newFoot.getPrice() + "', STOCKLEVEL = '" + newFoot.getStockLevel() + "' WHERE PRODUCTID = '" + originalFoot.getProductID() + "'");
-                    stmt.executeUpdate("UPDATE FOOTWEARTABLE SET SIZE = '" + newFoot.getSize() + "' WHERE PRODUCTID = '" + originalFoot.getProductID() + "'");
+                    stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PROCUCTNAME = '" + newFoot.getProductName() + "', PRICE = '" + newFoot.getPrice() + "', STOCKLEVEL = '" + newFoot.getStockLevel() + "' WHERE PRODUCTID = '" + newFoot.getProductID() + "'");
+                    stmt.executeUpdate("UPDATE FOOTWEARTABLE SET SIZE = '" + newFoot.getSize() + "' WHERE PRODUCTID = '" + newFoot.getProductID() + "'");
                 }
 
             } catch (ClassNotFoundException | SQLException ex) {
@@ -688,4 +682,5 @@ public class DBManager {
         
         return next;        
     }
+
 }
