@@ -154,7 +154,7 @@ public class DBManager {
     
     /**
      * This method takes in two parameters and uses them to update an entry in our database
-     * @param originalCloth
+     * 
      * @param newCloth 
      */
     public void updateClothingItem (Clothing newCloth)
@@ -163,8 +163,8 @@ public class DBManager {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
                     Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PROCUCTNAME = '" + newCloth.getProductName() + "', PRICE = '" + newCloth.getPrice() + "', STOCKLEVEL = '" + newCloth.getStockLevel() + "' WHERE PRODUCTID = '" + newCloth.getProductID() + "'");
-                    stmt.executeUpdate("UPDATE CLOTHINGTABLE SET MEASUREMENT = '" + newCloth.getMeasurement() + "' WHERE PRODUCTID = '" + newCloth.getProductID() + "'");
+                    stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PRODUCTNAME = '" + newCloth.getProductName() + "', PRICE = " + newCloth.getPrice() + ", STOCKLEVEL = " + newCloth.getStockLevel() + " WHERE PRODUCTID = " + newCloth.getProductID() + "");
+                    stmt.executeUpdate("UPDATE CLOTHINGTABLE SET MEASUREMENT = '" + newCloth.getMeasurement() + "' WHERE PRODUCTID = " + newCloth.getProductID() + "");
                 }
 
             } catch (ClassNotFoundException | SQLException ex) {
@@ -521,6 +521,45 @@ public class DBManager {
     }
     
     
+    public Customer findCustomer(int input)
+    {
+    Customer cust = new Customer();
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From CUSTOMERSTABLE Where USERID = " + input + "";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            if(rst.next())
+            {
+                cust.setUserID(rst.getInt("USERID"));
+                cust.setUserName(rst.getString("USERNAME"));
+                cust.setPassword(rst.getString("PASSWORD"));
+                cust.setFirstName(rst.getString("FIRSTNAME"));
+                cust.setLastName(rst.getString("LASTNAME"));
+                cust.setAddressLine1(rst.getString("ADDRESSLINE1"));
+                cust.setAddressLine2(rst.getString("ADDRESSLINE2"));
+                cust.setTown(rst.getString("TOWN"));
+                cust.setPostcode(rst.getString("POSTCODE"));
+                cust.setIsRegistered(rst.getBoolean("ISREGISTERED"));
+                cust.setOrders(loadCustomersOrders(cust.getUserID()));
+            }
+            else
+            {
+                cust = null;
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return cust;
+    }
+    
+    
+    
     public void saveOrder(Order order)
     {
         try {
@@ -588,6 +627,43 @@ public class DBManager {
         }
         return orders;
     }
+    
+    
+    public HashMap<Integer, Order> loadAllOrders()
+    {
+    
+        HashMap<Integer, Order> orders = new HashMap<>();
+        
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From ORDERSTABLE";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            
+            
+            while(rst.next())
+            {
+                Order order = new Order();
+                order.setOrderID(rst.getInt("ORDERID"));
+                order.setCustID(rst.getInt("CUSTID"));
+                order.setOrderDate(rst.getDate("ORDERDATE"));
+                order.setStatus(rst.getString("STATUS"));
+                order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
+                order.setOrderLines(loadOrderLines(order.getOrderID()));
+                orders.put(order.getOrderID(), order);
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return orders;
+    }
+    
     
     
         public HashMap<Integer, OrderLine> loadOrderLines(int id)
@@ -681,6 +757,40 @@ public class DBManager {
         }
         
         return next;        
+    }
+
+    public Order loadAnOrder(int id) 
+    {
+            
+        Order order = new Order();
+        
+        try 
+        {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            Statement stmt = conn.createStatement();
+            String sql = "Select * From ORDERSTABLE Where ORDERID = " + id + "";
+            ResultSet rst;
+            rst = stmt.executeQuery(sql);
+                
+            
+            
+            while(rst.next())
+            {
+                order = new Order();
+                order.setOrderID(rst.getInt("ORDERID"));
+                order.setCustID(rst.getInt("CUSTID"));
+                order.setOrderDate(rst.getDate("ORDERDATE"));
+                order.setStatus(rst.getString("STATUS"));
+                order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
+                order.setOrderLines(loadOrderLines(order.getOrderID()));
+            }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        return order;
     }
 
 }

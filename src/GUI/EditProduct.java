@@ -5,8 +5,13 @@
  */
 package GUI;
 
+import Classes.Clothing;
+import Classes.DBManager;
+import Classes.Footwear;
 import Classes.Product;
 import Classes.Staff;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -47,27 +52,220 @@ public class EditProduct extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        titleLbl = new javax.swing.JLabel();
+        idLbl = new javax.swing.JLabel();
+        nameLbl = new javax.swing.JLabel();
+        priceLbl = new javax.swing.JLabel();
+        stockLbl = new javax.swing.JLabel();
+        varLbl = new javax.swing.JLabel();
+        idTxtBx = new javax.swing.JTextField();
+        priceTxtBx = new javax.swing.JTextField();
+        nameTxtBx = new javax.swing.JTextField();
+        varTxtBx = new javax.swing.JTextField();
+        stockTxtBx = new javax.swing.JTextField();
+        backBtn = new javax.swing.JButton();
+        submitBtn = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        titleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titleLbl.setText("EDIT PRODUCT DETAILS");
+
+        idLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        idLbl.setText("ID:");
+
+        nameLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nameLbl.setText("NAME:");
+
+        priceLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        priceLbl.setText("PRICE: £");
+
+        stockLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        stockLbl.setText("STOCK LEVEL:");
+
+        varLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        varLbl.setText("MEASUREMENT:");
+
+        backBtn.setText("RETURN TO PRODUCT SELECT");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtnActionPerformed(evt);
+            }
+        });
+
+        submitBtn.setText("SUBMIT CHANGES");
+        submitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitBtnActionPerformed(evt);
+            }
+        });
+
+        clearBtn.setText("CLEAR CHANGES");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(backBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(128, 128, 128)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(nameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(idLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(priceLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(stockLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(varLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(idTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(priceTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nameTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(varTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(stockTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 113, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(submitBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(clearBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idLbl)
+                    .addComponent(idTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLbl)
+                    .addComponent(nameTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(priceLbl)
+                    .addComponent(priceTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(stockLbl)
+                    .addComponent(stockTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(varLbl)
+                    .addComponent(varTxtBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addComponent(submitBtn)
+                .addGap(53, 53, 53)
+                .addComponent(clearBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                .addComponent(backBtn)
+                .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        fillIn();
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        StaffViewProducts svp = new StaffViewProducts(staff);
+        this.dispose();
+        svp.setVisible(true);
+    }//GEN-LAST:event_backBtnActionPerformed
+
+    private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        
+        //creating a confirmation dialogue and storeing the result to int o
+        int o = JOptionPane.showConfirmDialog(null, "This will permanently ammend this product in your range!\nDo you wish to continue?","AMMEND PRODUCT!",JOptionPane.YES_NO_OPTION);
+        
+        //if user selects yes
+        if(o == 0)
+        {
+            if(varTxtBx.getText().equals("") ||
+            nameTxtBx.getText().equals("") ||
+            priceTxtBx.getText().equals("") ||
+            stockTxtBx.getText().equals(""))
+            {
+                infoBox("Please complete all fields before attempting to add an item!","ITEM ERROR");
+            }
+            else
+            {
+                DBManager db = new DBManager();
+                try{
+                    Double price = Double.parseDouble(priceTxtBx.getText());
+                    try{
+                        int stock = Integer.parseInt(stockTxtBx.getText());
+
+
+                        if(clothing)
+                        {                    
+                            Clothing cl = new Clothing(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, varTxtBx.getText());
+                            db.updateClothingItem(cl);
+                            infoBox("Item has been updated!","ITEM AMENDED");
+                        }
+                        else
+                        {
+                            try{
+                                int size = Integer.parseInt(varTxtBx.getText());
+                                Footwear ft = new Footwear(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, size);
+                                db.updateFootwearItem(ft);
+                                infoBox("Item has been updated!","ITEM AMENDED");
+                            } catch(Exception e){
+                                infoBox("Please only enter a numeric value for the item size!","INPUT ERROR");
+                            }
+
+                        }
+                    }catch (Exception e){
+                    infoBox("Please only enter a numeric value for a stock level!","INPUT ERROR");
+                    }
+                }catch (Exception e) {
+                    infoBox("Please only enter a numeric value for the item price!","INPUT ERROR");
+                }
+            } 
+        }
+    }//GEN-LAST:event_submitBtnActionPerformed
+
     
     private void fillIn() 
     {
+        idTxtBx.setText("" + p.getProductID());
+        idTxtBx.setEnabled(false);
+        nameTxtBx.setText(p.getProductName());
+        priceTxtBx.setText("" + String.format("%.2f", p.getPrice()));
+        stockTxtBx.setText("" + p.getStockLevel());
+        if(clothing)
+        {
+            Clothing c = (Clothing)p;
+            varTxtBx.setText(c.getMeasurement());
+        }
+        else
+        {
+            Footwear f = (Footwear)p;
+            varLbl.setText("SIZE:");
+            varTxtBx.setText("" + f.getSize());
+        }
         
+    }
+    
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
     }
     
     
@@ -109,5 +307,19 @@ public class EditProduct extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBtn;
+    private javax.swing.JButton clearBtn;
+    private javax.swing.JLabel idLbl;
+    private javax.swing.JTextField idTxtBx;
+    private javax.swing.JLabel nameLbl;
+    private javax.swing.JTextField nameTxtBx;
+    private javax.swing.JLabel priceLbl;
+    private javax.swing.JTextField priceTxtBx;
+    private javax.swing.JLabel stockLbl;
+    private javax.swing.JTextField stockTxtBx;
+    private javax.swing.JButton submitBtn;
+    private javax.swing.JLabel titleLbl;
+    private javax.swing.JLabel varLbl;
+    private javax.swing.JTextField varTxtBx;
     // End of variables declaration//GEN-END:variables
 }

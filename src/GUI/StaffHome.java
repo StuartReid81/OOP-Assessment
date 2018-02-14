@@ -58,6 +58,11 @@ public class StaffHome extends javax.swing.JFrame {
         });
 
         viewBtn.setText("VIEW ALL ORDERS");
+        viewBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewBtnActionPerformed(evt);
+            }
+        });
 
         logoutBtn.setText("LOGOUT");
         logoutBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -118,6 +123,12 @@ public class StaffHome extends javax.swing.JFrame {
             svp.setVisible(true);
         }
     }//GEN-LAST:event_modBtnActionPerformed
+
+    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
+        StaffViewOrders svo = new StaffViewOrders(staff);
+        this.dispose();
+        svo.setVisible(true);
+    }//GEN-LAST:event_viewBtnActionPerformed
 
     
     public static void infoBox(String infoMessage, String titleBar)
