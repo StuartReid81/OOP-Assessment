@@ -158,52 +158,68 @@ public class DBManager {
      */
     public HashMap<Integer, Footwear> loadAllFootwear()
     {
+        //instantiating footwear HashMap
         HashMap<Integer, Footwear> footwear = new HashMap();
         
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
+                //string containing sql statement to pull all results from our products and footwear table that are joined via the product ID
                 String sql = "Select * From FOOTWEARTABLE INNER JOIN PRODUCTSTABLE ON FOOTWEARTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID";
+                //instantiating our result set
                 ResultSet rst;
+                //running our query and storing to our result set
                 rst = stmt.executeQuery(sql);
                 
+                //while looping through all returned results
                 while (rst.next())
                 {
+                    //instantiate foot
                     Footwear foot = new Footwear();
+                    //storing returned values from current row of our result set to our footwear instance
                     foot.setProductID(rst.getInt("PRODUCTID"));
                     foot.setProductName(rst.getString("PRODUCTNAME"));
                     foot.setPrice(rst.getDouble("PRICE"));
                     foot.setStockLevel(rst.getInt("STOCKLEVEL"));
                     foot.setSize(rst.getInt("SIZE"));
+                    //adds foot to our hashmap
                     footwear.put(foot.getProductID(), foot);
                 }
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returns the footwear hashmap from the method
         return footwear;
     }
     
     
     /**
-     * This method takes in two parameters and uses them to update an entry in our database
-     * 
-     * @param newCloth 
+     * This method takes in an instance of clothing and updates the matching productid entry in our database tables
+     * @param newCloth this is the clothing item that holds the data to be updated to our tables
      */
     public void updateClothingItem (Clothing newCloth)
     {
         try {
+                //points our derby database driver
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                    //creates a statment using our connection
                     Statement stmt = conn.createStatement();
+                    //runs seperate sql statements to update revelent data to our product table and our clothing table
                     stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PRODUCTNAME = '" + newCloth.getProductName() + "', PRICE = " + newCloth.getPrice() + ", STOCKLEVEL = " + newCloth.getStockLevel() + " WHERE PRODUCTID = " + newCloth.getProductID() + "");
                     stmt.executeUpdate("UPDATE CLOTHINGTABLE SET MEASUREMENT = '" + newCloth.getMeasurement() + "' WHERE PRODUCTID = " + newCloth.getProductID() + "");
                 }
-
+            //catch passing out any returned error messages to the console
             } catch (ClassNotFoundException | SQLException ex) {
                 String message = ex.getMessage();
                 System.out.println(message);
@@ -212,35 +228,47 @@ public class DBManager {
     
     /**
      * This method takes in two parameters and uses them to update an entry in our database
-     * 
-     * @param newFoot
+     * @param newFoot this is the footwear item that holds the data to be updated to our tables
      */
     public void updateFootwearItem (Footwear newFoot)
     {
         try {
+                //points our derby database driver
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                    //creates a statment using our connection
                     Statement stmt = conn.createStatement();
+                    //runs seperate sql statements to update revelent data to our product table and our footwear table
                     stmt.executeUpdate("UPDATE PRODUCTSTABLE SET PROCUCTNAME = '" + newFoot.getProductName() + "', PRICE = '" + newFoot.getPrice() + "', STOCKLEVEL = '" + newFoot.getStockLevel() + "' WHERE PRODUCTID = '" + newFoot.getProductID() + "'");
                     stmt.executeUpdate("UPDATE FOOTWEARTABLE SET SIZE = '" + newFoot.getSize() + "' WHERE PRODUCTID = '" + newFoot.getProductID() + "'");
                 }
-
+            //catch passing out any returned error messages to the console
             } catch (ClassNotFoundException | SQLException ex) {
                 String message = ex.getMessage();
                 System.out.println(message);
             }
     }
     
-        
+    /**
+     * This method searches our clothing table and our products table based on the productID column and returns the item
+     * @param id - this is the id of the clothing item we are looking for
+     * @return returns and instance of our clothing class
+     */
     public Clothing findClothing(int id)
     {
-    Clothing cloth = new Clothing();
+        Clothing cloth = new Clothing();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing sql statement returning any entries that match the given id
             String sql = "Select * From CLOTHINGTABLE INNER JOIN PRODUCTSTABLE ON CLOTHINGTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID WHERE PRODUCTSTABLE.PRODUCTID = " + id + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -256,6 +284,7 @@ public class DBManager {
             {
                 cloth = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -283,10 +312,14 @@ public class DBManager {
     Footwear foot = new Footwear();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From FOOTWEARTABLE INNER JOIN PRODUCTSTABLE ON FOOTWEARTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID WHERE PRODUCTSTABLE.PRODUCTID = " + id + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -302,6 +335,7 @@ public class DBManager {
             {
                 foot = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -316,10 +350,14 @@ public class DBManager {
         
         try
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select MAX(ORDERID) From ORDERSTABLE";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
             
@@ -328,6 +366,7 @@ public class DBManager {
                 next = rst.getInt(1);              
                 next++;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -342,10 +381,14 @@ public class DBManager {
         int next = 1;
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select MAX(ORDERLINEID) From ORDERLINESTABLE";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -355,6 +398,7 @@ public class DBManager {
                 next++;
                 
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -369,10 +413,14 @@ public class DBManager {
         int next = 1;
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select MAX(USERID) From (SELECT USERID FROM CUSTOMERSTABLE UNION SELECT USERID FROM STAFFTABLE)COMBINED";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -382,6 +430,7 @@ public class DBManager {
                 next++;
                 
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -395,16 +444,18 @@ public class DBManager {
     {
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
-
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) 
             {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 int id = ol.getProduct().getProductID();
                 String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, ORDERID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getOrderID() + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
                 stmt.executeUpdate(query);
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -418,10 +469,14 @@ public class DBManager {
         OrderLine ol = new OrderLine();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From ORDERLINESTABLE Where PRODUCTLINEID = '" + input.trim() + "'";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -436,6 +491,7 @@ public class DBManager {
             {
                 ol = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -451,12 +507,15 @@ public class DBManager {
     
     public void saveCustomer(Customer cust) {
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 stmt.executeUpdate("INSERT INTO CUSTOMERSTABLE (USERID, USERNAME, PASSWORD, FIRSTNAME, LASTNAME, ADDRESSLINE1, ADDRESSLINE2, TOWN, POSTCODE, ISREGISTERED) VALUES (" + cust.getUserID() + " , '" + cust.getUsername() + "' , '" + cust.getPassword() + "', '" + cust.getFirstName() + "', '" + cust.getLastName() + "', '" + cust.getAddressLine1() + "', '" + cust.getAddressLine2() + "', '" + cust.getTown() + "', '" + cust.getPostcode() + "', '" + cust.getIsRegistered() + "')" );
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -468,12 +527,16 @@ public class DBManager {
     
     public void deleteAllCustomers() {
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 
                 stmt.executeUpdate("DELETE * CUSTOMERSTABLE");
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -487,8 +550,11 @@ public class DBManager {
     {
 
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 
                 stmt.executeUpdate("DELETE FROM CUSTOMERSTABLE WHERE USERNAME = '" + originalCust.getUsername() + "'");
@@ -499,6 +565,7 @@ public class DBManager {
                     stmt.executeUpdate("DELETE FROM ORDERLINESTABLE WHERE ORDERID = " + orders.get(key).getOrderID() + "");
                 }
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -510,12 +577,15 @@ public class DBManager {
     public void updateCustomer (Customer originalCust, Customer newCust)
     {
         try {
+            //points our derby database driver
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                    //creates a statment using our connection
                     Statement stmt = conn.createStatement();
                     stmt.executeUpdate("UPDATE CUSTOMERSTABLE SET PASSWORD = '" + newCust.getPassword() + "', FIRSTNAME = '" + newCust.getFirstName() + "', LASTNAME = '" + newCust.getLastName() + "', ADDRESSLINE1 = '" + newCust.getAddressLine1() + "', ADDRESSLINE2 = '" + newCust.getAddressLine2() + "', TOWN = '" + newCust.getTown() + "', POSTCODE = '" + newCust.getPostcode() + "' WHERE USERNAME = '" + originalCust.getUsername() + "'");
                 }
-
+            //catch passing out any returned error messages to the console
             } catch (ClassNotFoundException | SQLException ex) {
                 String message = ex.getMessage();
                 System.out.println(message);
@@ -531,10 +601,14 @@ public class DBManager {
     Customer cust = new Customer();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From CUSTOMERSTABLE Where USERNAME = '" + input.trim() + "'";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -556,6 +630,7 @@ public class DBManager {
             {
                 cust = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -569,10 +644,14 @@ public class DBManager {
     Customer cust = new Customer();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From CUSTOMERSTABLE Where USERID = " + input + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -594,6 +673,7 @@ public class DBManager {
             {
                 cust = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -606,13 +686,16 @@ public class DBManager {
     public void saveOrder(Order order)
     {
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                 stmt.executeUpdate("INSERT INTO ORDERSTABLE (ORDERID, CUSTID, ORDERDATE, ORDERTOTAL, STATUS)" + " VALUES (" + order.getOrderID() + ", " + order.getCustID() + ", '" + date + "', " + order.getOrderTotal() + ", '" + order.getStatus() + "')");
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -623,12 +706,15 @@ public class DBManager {
     public void addOrderID(int olID, int orderID)
     {
             try {
+                //points our derby database driver
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
                 try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                    //creates a statment using our connection
                     Statement stmt = conn.createStatement();
                     stmt.executeUpdate("UPDATE ORDERLINESTABLE SET ORDERID = " + orderID + " WHERE ORDERLINEID = " + olID + "");
                 }
-
+            //catch passing out any returned error messages to the console
             } catch (ClassNotFoundException | SQLException ex) {
                 String message = ex.getMessage();
                 System.out.println(message);
@@ -643,10 +729,14 @@ public class DBManager {
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From ORDERSTABLE Where CUSTID = " + id + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -663,7 +753,7 @@ public class DBManager {
                 order.setOrderLines(loadOrderLines(order.getOrderID()));
                 orders.put(order.getOrderID(), order);
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -679,10 +769,14 @@ public class DBManager {
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From ORDERSTABLE";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -699,7 +793,7 @@ public class DBManager {
                 order.setOrderLines(loadOrderLines(order.getOrderID()));
                 orders.put(order.getOrderID(), order);
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -716,10 +810,14 @@ public class DBManager {
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //creates a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From ORDERLINESTABLE Where ORDERID = " + id + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -737,7 +835,7 @@ public class DBManager {
                 
                 orderLines.put(ol.getProductLineID(), ol);
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -749,10 +847,14 @@ public class DBManager {
         Staff staff = new Staff();
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //creates a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From STAFFTABLE Where USERNAME = '" + inputUsername.trim() + "'";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -770,6 +872,7 @@ public class DBManager {
             {
                 staff = null;
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -781,10 +884,14 @@ public class DBManager {
         int next = 1;
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //creates a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select MAX(PRODUCTID) From PRODUCTSTABLE";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -794,6 +901,7 @@ public class DBManager {
                 next++;
                 
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -809,10 +917,14 @@ public class DBManager {
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //creates a connection to the database
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
             Statement stmt = conn.createStatement();
             String sql = "Select * From ORDERSTABLE Where ORDERID = " + id + "";
+            //instantiating our result set
             ResultSet rst;
             rst = stmt.executeQuery(sql);
                 
@@ -828,16 +940,12 @@ public class DBManager {
                 order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
                 order.setOrderLines(loadOrderLines(order.getOrderID()));
             }
-
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
         }
         return order;
-    }
-
-    private void deleteOrderline() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
