@@ -225,6 +225,7 @@ public class ViewProducts extends javax.swing.JFrame {
      */
     private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
 
+        productList.clearSelection();
         //if list box selection equals clothing
         if(categoryList.getSelectedValue().equals("Clothing"))
         {
@@ -433,53 +434,59 @@ public class ViewProducts extends javax.swing.JFrame {
         //creates default list model variable
         DefaultListModel dlm;
         
-        //sotres selected index to an iint variable
-        int index = productList.getSelectedIndex();
-        
-        //gets list model and stores to our variable
-        dlm = (DefaultListModel)productList.getModel();
-        
-        //checks to make sure dlm is not empty
-        if(!dlm.isEmpty())
+        //checks to see if there is an active selection
+        if(productList.getSelectedIndex()!=-1)
         {
-            
-            //gets the product selected and stores it to p
-            Product p = (Product)dlm.getElementAt(index);
+            //stores selected index to an iint variable
+            int index = productList.getSelectedIndex();
 
-            //checks is the product is in stock
-            if(p.getStockLevel() != 0)
+            //gets list model and stores to our variable
+            dlm = (DefaultListModel)productList.getModel();
+
+            //checks to make sure dlm is not empty
+            if(!dlm.isEmpty())
             {
-                //enables our add button and drop down
-                addBtn.setEnabled(true);
-                quantityDD.setEnabled(true);
 
-                //creates a string array the size of our stock level
-                String[] quantity = new String[p.getStockLevel()];
+                //gets the product selected and stores it to p
+                Product p = (Product)dlm.getElementAt(index);
 
-                //loops from 1 to our stock level adding each number to our array
-                for (int i = 1; i <= p.getStockLevel(); i++)
+                //checks is the product is in stock
+                if(p.getStockLevel() != 0)
                 {
-                    quantity[i-1] = "" + i;
+                    //enables our add button and drop down
+                    addBtn.setEnabled(true);
+                    quantityDD.setEnabled(true);
+
+                    //creates a string array the size of our stock level
+                    String[] quantity = new String[p.getStockLevel()];
+
+                    //loops from 1 to our stock level adding each number to our array
+                    for (int i = 1; i <= p.getStockLevel(); i++)
+                    {
+                        quantity[i-1] = "" + i;
+                    }
+
+                    //stores the array to a combobox model
+                    DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
+
+                    ///sets the model to our combo box for display
+                    quantityDD.setModel(dcbm);
                 }
 
-                //stores the array to a combobox model
-                DefaultComboBoxModel dcbm = new DefaultComboBoxModel(quantity);
+                //if there is no stock
+                else
+                {
+                    //disables our add button and dropdown
+                    addBtn.setEnabled(false);
+                    quantityDD.setEnabled(false);
 
-                ///sets the model to our combo box for display
-                quantityDD.setModel(dcbm);
-            }
-
-            //if there is no stock
-            else
-            {
-                //disables our add button and dropdown
-                addBtn.setEnabled(false);
-                quantityDD.setEnabled(false);
-
-                //displays error message pop up for user
-                infoBox("This item is out of stock!","BASKET");
+                    //displays error message pop up for user
+                    infoBox("This item is out of stock!","BASKET");
+                }
             }
         }
+        
+        
     }//GEN-LAST:event_productListValueChanged
 
     
