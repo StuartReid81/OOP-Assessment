@@ -124,7 +124,7 @@ public class DBManager {
                 String sql = "Select * From CLOTHINGTABLE INNER JOIN PRODUCTSTABLE ON CLOTHINGTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID";
                 //instantiating our result set
                 ResultSet rst;
-                //running our query and storing to our result set
+                //running our query and storing to our result set 
                 rst = stmt.executeQuery(sql);
                 
                 //while looping through all returned results
@@ -270,10 +270,13 @@ public class DBManager {
             String sql = "Select * From CLOTHINGTABLE INNER JOIN PRODUCTSTABLE ON CLOTHINGTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID WHERE PRODUCTSTABLE.PRODUCTID = " + id + "";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
+            //if a row is retuned
             if(rst.next())
             {
+                //setting returned values to our cloth variable
                 cloth.setProductID(rst.getInt("PRODUCTID"));
                 cloth.setProductName(rst.getString("PRODUCTNAME"));
                 cloth.setPrice(rst.getDouble("PRICE"));
@@ -282,6 +285,7 @@ public class DBManager {
             }
             else
             {
+                //if nothing returned setting cloth to null
                 cloth = null;
             }
         //catch passing out any returned error messages to the console
@@ -289,63 +293,88 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returning the cloth variable from the method
         return cloth;
     }
         
 
+    /**
+     * Method that differentiates the type of class and returns the instance matching the id parameter
+     * @param id productID passed in to method
+     * @return returns result of either findClothing method or findFootwear
+     */
     public Product findProduct(int id)
     {
+        //if the findClothing method doesn't return null
         if(findClothing(id)!=null)
         {
+            //calls method passing in parameter
             return findClothing(id);
         }
+        //if findClothing returns null
         else
         {
+            //calls method passing in parameter
             return findFootwear(id);
         }
     }
     
     
-    
+    /**
+     * method that joins products table and footwear table and searches for a matching productID 
+     * @param id - this is the productID of the item we are searching for
+     * @return the method returns an instance of the Footwear class
+     */
     public Footwear findFootwear(int id)
     {
-    Footwear foot = new Footwear();
-        try 
-        {
-            //points our derby database driver
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            //tries to create a connection to the database
-            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
-            //creates a statment using our connection
-            Statement stmt = conn.createStatement();
-            String sql = "Select * From FOOTWEARTABLE INNER JOIN PRODUCTSTABLE ON FOOTWEARTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID WHERE PRODUCTSTABLE.PRODUCTID = " + id + "";
-            //instantiating our result set
-            ResultSet rst;
-            rst = stmt.executeQuery(sql);
-                
-            if(rst.next())
+        //instantiating variable foot
+        Footwear foot = new Footwear();
+            try 
             {
-                foot.setProductID(rst.getInt("PRODUCTID"));
-                foot.setProductName(rst.getString("PRODUCTNAME"));
-                foot.setPrice(rst.getDouble("PRICE"));
-                foot.setStockLevel(rst.getInt("STOCKLEVEL"));
-                foot.setSize(rst.getInt("SIZE"));
+                //points our derby database driver
+                Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
+                Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+                //creates a statment using our connection
+                Statement stmt = conn.createStatement();
+                //string holding our sql statement - select all entried from the joined tables that match the id provided
+                String sql = "Select * From FOOTWEARTABLE INNER JOIN PRODUCTSTABLE ON FOOTWEARTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID WHERE PRODUCTSTABLE.PRODUCTID = " + id + "";
+                //instantiating our result set
+                ResultSet rst;
+                //running our query and storing to our result set
+                rst = stmt.executeQuery(sql);
+
+                //if a row is retuned
+                if(rst.next())
+                {
+                    // storing the returned rows values to our variable foot
+                    foot.setProductID(rst.getInt("PRODUCTID"));
+                    foot.setProductName(rst.getString("PRODUCTNAME"));
+                    foot.setPrice(rst.getDouble("PRICE"));
+                    foot.setStockLevel(rst.getInt("STOCKLEVEL"));
+                    foot.setSize(rst.getInt("SIZE"));
+                }
+                else
+                {
+                    //if no results returned we set the variable foot to null
+                    foot = null;
+                }
+            //catch passing out any returned error messages to the console
+            } catch (ClassNotFoundException | SQLException ex) {
+                String message = ex.getMessage();
+                System.out.println(message);
             }
-            else
-            {
-                foot = null;
-            }
-        //catch passing out any returned error messages to the console
-        } catch (ClassNotFoundException | SQLException ex) {
-            String message = ex.getMessage();
-            System.out.println(message);
-        }
+        //the variable foot is returned from the method
         return foot;
     }
     
-    
+    /**
+     * A method that returns the maximum value for OrderID from our orders table
+     * @return an int is returned holding the maximum ID value
+     */
     public int getNextOrderID()
     {
+        //instantiates our variable and sets its value to one
         int next = 1;
         
         try
@@ -356,13 +385,17 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql statement
             String sql = "Select MAX(ORDERID) From ORDERSTABLE";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
             
+            //if a row is retuned
             if(rst.next())
             {
+                //increments the returned value by 1 and sets it to our variable
                 next = rst.getInt(1);              
                 next++;
             }
@@ -372,12 +405,17 @@ public class DBManager {
             System.out.println(message);
         }
 
+        //returns our int variable
         return next;
     }
     
-    
+    /**
+     * A method that returns the maximum value for OrderlineID from our orderslines table
+     * @return an int is returned holding the maximum ID value
+     */
     public int getNextOrderLineID()
     {
+        //instantiates our variable and sets its value to one
         int next = 1;
         try 
         {
@@ -387,13 +425,17 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql statement
             String sql = "Select MAX(ORDERLINEID) From ORDERLINESTABLE";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
+            //if a row is retuned
             if(rst.next())
             {
+                //increments the returned value by 1 and sets it to our variable
                 next = rst.getInt(1);              
                 next++;
                 
@@ -403,13 +445,17 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
-        
+        //returns our int variable
         return next;
     }
     
-    
+    /**
+     * A method that returns the maximum value for userID from our staff and customer tables
+     * @return an int is returned holding the maximum ID value
+     */
     public int getNextUserID()
     {
+        //instantiates our variable and sets its value to one
         int next = 1;
         try 
         {
@@ -419,13 +465,17 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql statement
             String sql = "Select MAX(USERID) From (SELECT USERID FROM CUSTOMERSTABLE UNION SELECT USERID FROM STAFFTABLE)COMBINED";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
+            //if a row is retuned
             if(rst.next())
             {
+                //increments the returned value by 1 and sets it to our variable
                 next = rst.getInt(1);              
                 next++;
                 
@@ -435,11 +485,14 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
-        
+        //returns our int variable
         return next;
     }
     
-    
+    /**
+     * This method stores an orderline to our orderlines table
+     * @param ol orderline passed to the method to be saved to our orderlines Table
+     */
     public void saveOrderLine(OrderLine ol)
     {
         try 
@@ -452,6 +505,7 @@ public class DBManager {
                 //creates a statment using our connection
                 Statement stmt = conn.createStatement();
                 int id = ol.getProduct().getProductID();
+                //string containing our sql statement
                 String query = "INSERT INTO ORDERLINESTABLE (ORDERLINEID, PRODUCTID, ORDERID, QUANTITY, LINETOTAL)" + " " + "VALUES (" + ol.getProductLineID() + ", " + id + ", " + ol.getOrderID() + ", " + ol.getQuantity() + ", " + ol.getLineTotal() + ")";
                 stmt.executeUpdate(query);
             }
@@ -478,6 +532,7 @@ public class DBManager {
             String sql = "Select * From ORDERLINESTABLE Where PRODUCTLINEID = '" + input.trim() + "'";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
@@ -610,6 +665,7 @@ public class DBManager {
             String sql = "Select * From CUSTOMERSTABLE Where USERNAME = '" + input.trim() + "'";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
@@ -653,6 +709,7 @@ public class DBManager {
             String sql = "Select * From CUSTOMERSTABLE Where USERID = " + input + "";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
@@ -738,6 +795,7 @@ public class DBManager {
             String sql = "Select * From ORDERSTABLE Where CUSTID = " + id + "";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             
@@ -778,6 +836,7 @@ public class DBManager {
             String sql = "Select * From ORDERSTABLE";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             
@@ -819,6 +878,7 @@ public class DBManager {
             String sql = "Select * From ORDERLINESTABLE Where ORDERID = " + id + "";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             
@@ -856,6 +916,7 @@ public class DBManager {
             String sql = "Select * From STAFFTABLE Where USERNAME = '" + inputUsername.trim() + "'";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
@@ -893,6 +954,7 @@ public class DBManager {
             String sql = "Select MAX(PRODUCTID) From PRODUCTSTABLE";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             if(rst.next())
@@ -926,6 +988,7 @@ public class DBManager {
             String sql = "Select * From ORDERSTABLE Where ORDERID = " + id + "";
             //instantiating our result set
             ResultSet rst;
+            //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
             
