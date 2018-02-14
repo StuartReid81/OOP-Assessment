@@ -57,6 +57,9 @@ public class Clothing extends Product{
     
     
     @Override
+    /**
+     * toString method concatenating object details in to a description
+     */
     public String toString()
     {
         return ("Item No: " + super.getProductID() + ", Name: " + super.getProductName() + ", Price: £" + String.format("%.2f", super.getPrice()) + ", Stock Available: " + super.getStockLevel() + ", Measurement: " + measurement + "");

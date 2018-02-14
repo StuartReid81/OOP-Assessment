@@ -14,6 +14,7 @@ import java.util.HashMap;
  */
 public class Customer extends User {
     
+    
     //attributes
     private String addressLine1;
     private String addressLine2;
@@ -21,6 +22,7 @@ public class Customer extends User {
     private String postcode;
     private HashMap<Integer, Order> orders; 
     private boolean isRegistered;
+    
     
     //getters
     public String getAddressLine1(){return addressLine1;}
@@ -30,6 +32,7 @@ public class Customer extends User {
     public HashMap<Integer, Order> getOrders(){return orders;}
     public boolean getIsRegistered(){return isRegistered;}
     
+    
     //setters
     public void setAddressLine1(String addressLine1){this.addressLine1 = addressLine1;}
     public void setAddressLine2(String addressLine2){this.addressLine2 = addressLine2;}
@@ -38,11 +41,13 @@ public class Customer extends User {
     public void setOrders(HashMap<Integer, Order> orders){this.orders = orders;}
     public void setIsRegistered(boolean isRegistered){this.isRegistered = isRegistered;}
     
+    
     /**
      * Default constructor for our Customer class creating an instance of a customer without declaring values for is attributes.
      */
     public Customer(){super(); orders = new HashMap<>();}
 
+    
     /**
      * Overloaded constructor taking in parameters to define an instance of the customer class.
      * @param userID this sets the userID that we pass in to the constructor of our user class.
@@ -73,18 +78,24 @@ public class Customer extends User {
         }
     }
     
+    
     //methods
+    
+    
+    /**
+     * Method used when customer visits their home page
+     * @return greeting - this returns our welcome string
+     */
     public String displayGreeting()
     {
-        String greeting = "";
+        String greeting = "Welcome " + super.getFirstName() + "!";
         return greeting;
     }
     
+    
+    //allows us to add an order to our users HashMap of orders
     public void addOrder(Order o)
     {
         orders.put(o.getOrderID(), o);
     }
-    
-    
-    
 }

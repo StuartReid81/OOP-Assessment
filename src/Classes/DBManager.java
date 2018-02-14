@@ -21,23 +21,36 @@ public class DBManager {
     //Methods for DB management of Products and subclasses
     
 
-    //This method takes in a Product as a parameter and stores it to the relevant tables
+    /**
+     * This method takes in a Product as a parameter and stores it to the relevant tables
+     * @param prod our product we pass in that is to be saved to our products table
+     **/
     public void saveProduct(Product prod) {
+        
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
+                //runs update to our database inserting values from our passed in product to our products table 
                 stmt.executeUpdate("INSERT INTO PRODUCTSTABLE (PRODUCTID, PRODUCTNAME, PRICE, STOCKLEVEL)" + " VALUES (" + prod.getProductID() + ", '" + prod.getProductName() + "', " + prod.getPrice() + ", " + prod.getStockLevel() + ")");
+                //if the product is an instance of the clothing class
                 if(prod instanceof Clothing)
                 {
+                    //adds the products id and measurement values to our clothing table
                     stmt.executeUpdate("INSERT INTO CLOTHINGTABLE (PRODUCTID, MEASUREMENT) VALUES (" + prod.getProductID() + ", '" + ((Clothing) prod).getMeasurement() + "')");
                 }
+                //if the product is an instance of the footwear class
                 else
                 {
+                    //adds the products id and size values to our footwear table
                     stmt.executeUpdate("INSERT INTO FOOTWEARTABLE (PRODUCTID, SIZE) VALUES (" + prod.getProductID() + ", " + ((Footwear) prod).getSize() + ")");
                 }
             }
-
+        //catch passing out error message to console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -45,32 +58,43 @@ public class DBManager {
     }
     
 
-    
-    
-    //this method deletes a single product entry
+    /**
+     * this method deletes a single product entry
+     * @param prod this is our product that is to be deleted from our tables
+     **/ 
     public void deleteProduct (Product prod)
     {
         try {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
-                
+            
+            //if product is an instance of our clothing class
             if(prod instanceof Clothing)
                 {
+                    //create our two sql strings to delete the item from our tables
                     String sql = "DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
                     String sql2 =  "DELETE FROM CLOTHINGTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    //run both sql statements
                     stmt.executeUpdate(sql2);
                     stmt.executeUpdate(sql);
                     
                 }
+                //if the product is an instance of the footwear class
                 else
                 {
+                    //create our two sql strings to delete the item from our tables
                     String sql = "DELETE FROM PRODUCTSTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
                     String sql2 = "DELETE FROM FOOTWEARTABLE WHERE PRODUCTID = " + prod.getProductID() + "";
+                    //run both sql statements
                     stmt.executeUpdate(sql);
                     stmt.executeUpdate(sql2);
                 }
             }
+        //catch passing out any error messages to console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
@@ -84,33 +108,46 @@ public class DBManager {
      */
     public HashMap<Integer, Clothing> loadAllClothing()
     {
+        //instantiating clothes HashMap
         HashMap<Integer, Clothing> clothes = new HashMap();
         
         
         try 
         {
+            //points our derby database driver
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
             try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                //creates a statment using our connection
                 Statement stmt = conn.createStatement();
+                //string containing sql statement to pull all results from our products and clothing table that are joined via the product ID
                 String sql = "Select * From CLOTHINGTABLE INNER JOIN PRODUCTSTABLE ON CLOTHINGTABLE.PRODUCTID = PRODUCTSTABLE.PRODUCTID";
+                //instantiating our result set
                 ResultSet rst;
+                //running our query and storing to our result set
                 rst = stmt.executeQuery(sql);
                 
+                //while looping through all returned results
                 while (rst.next())
                 {
+                    //instantiate cloth
                     Clothing cloth = new Clothing();
+                    //storing returned values from current row of our result set to our clothing instance
                     cloth.setProductID(rst.getInt("PRODUCTID"));
                     cloth.setProductName(rst.getString("PRODUCTNAME"));
                     cloth.setPrice(rst.getDouble("PRICE"));
                     cloth.setStockLevel(rst.getInt("STOCKLEVEL"));
                     cloth.setMeasurement(rst.getString("MEASUREMENT"));
+                    //adds cloth to our hashmap
                     clothes.put(cloth.getProductID(), cloth);
                 }
             }
+        //catch passing out any returned error messages to the console
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returns the clothes hashmap from the method
         return clothes;
     }
     
@@ -175,7 +212,7 @@ public class DBManager {
     
     /**
      * This method takes in two parameters and uses them to update an entry in our database
-     * @param originalFoot
+     * 
      * @param newFoot
      */
     public void updateFootwearItem (Footwear newFoot)
@@ -455,6 +492,12 @@ public class DBManager {
                 Statement stmt = conn.createStatement();
                 
                 stmt.executeUpdate("DELETE FROM CUSTOMERSTABLE WHERE USERNAME = '" + originalCust.getUsername() + "'");
+                HashMap<Integer, Order> orders = loadCustomersOrders(originalCust.getUserID());
+                stmt.executeUpdate("DELETE FROM ORDERSTABLE WHERE CUSTID = " + originalCust.getUserID() + "");
+                for(int key : orders.keySet())
+                {
+                    stmt.executeUpdate("DELETE FROM ORDERLINESTABLE WHERE ORDERID = " + orders.get(key).getOrderID() + "");
+                }
             }
         } catch (ClassNotFoundException | SQLException ex) {
             String message = ex.getMessage();
@@ -666,7 +709,7 @@ public class DBManager {
     
     
     
-        public HashMap<Integer, OrderLine> loadOrderLines(int id)
+    public HashMap<Integer, OrderLine> loadOrderLines(int id)
     {
     
         HashMap<Integer, OrderLine> orderLines = new HashMap<>();
@@ -791,6 +834,10 @@ public class DBManager {
             System.out.println(message);
         }
         return order;
+    }
+
+    private void deleteOrderline() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
