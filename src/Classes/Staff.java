@@ -55,6 +55,12 @@ public class Staff extends User{
     
     
     //methods
+    
+    
+    /**
+     * This method takes in values from our instance of the staff class and concatenates them to make a greeting message
+     * @return - returns a string containing our greeting
+     */
     public String displayGreeting()
     {
         String greeting = "Welcome " + super.getFirstName() + " " + super.getLastName() + ". You are now logged in with " + this.position + " privileges.";

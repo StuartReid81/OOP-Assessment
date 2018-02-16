@@ -6,7 +6,7 @@
 package Classes;
 
 /**
- *
+ * @Date 1/2/2018
  * @author Stuart Reid
  * Super class defining the an instance of a product. 
  */
@@ -56,7 +56,8 @@ public class Product {
         this.stockLevel = stockLevel;
     }
     
-        /**
+    
+    /**
      * This is an overloaded constructor creating an instance of our product 
      * class. It takes in parameters and stores them to the instances attributes.
      * This version does not take in an ID number and will be used when creating a new
@@ -71,7 +72,5 @@ public class Product {
         this.price = price;
         this.stockLevel = stockLevel;
     }
-    
-    //methods
-    //public abstract String productToString();
+
 }

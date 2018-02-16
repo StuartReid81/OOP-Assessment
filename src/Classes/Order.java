@@ -48,6 +48,7 @@ public class Order {
      */
     public Order(){}
     
+    
     /**
      * This is an overloaded constructor which takes in parameters and creates an
      * instance of the order class.
@@ -66,83 +67,6 @@ public class Order {
         this.orderTotal = orderTotal;
         this.status = status;
         this.orderLines = orderLines;
-    }
-    
-    
-    //methods
-    
-    /**
-     * This method takes in an OrderLine as a parameter and adds it to our orderLines
-     * HashMap.
-     * @param ol this is an instance of our OrderLine class which we are adding to our Order class.
-     * @param isRegistered the value is a boolean whose value is true if our instance of the customer class is registered
-     */
-    public void addOrderLine(OrderLine ol, boolean isRegistered)
-    {
-        // if Customer is registered we use the getProductID method as the key 
-        // when storing our OrderLine "ol" to our HashMap.
-        if(isRegistered)
-        {
-        orderLines.put(ol.getProductLineID(), ol);
-        }
-    }
-    
-    /**
-     * This method takes in an OrderLine as a parameter and checks orderLines to see if it is stored there
-     * and if it is there we remove it from the HashMap.
-     * @param ol this is an instance of our OrderLine class which we are removing from our Order class.
-     * @param isRegistered the value is a boolean whose value is true if our instance of the customer class is registered
-     */
-    public void removeOrderLine(OrderLine ol, boolean isRegistered)
-    {
-        // if Customer is registered we check to see if ol is in our orderLines 
-        // HashMap. If it is we remove it.
-        if(isRegistered)
-        {
-            //loops our HashMap
-            for(OrderLine x : orderLines.values())
-            {
-                //if our OrderLines match we remove it from the HashMap.
-                if(x == ol)
-                {
-                    orderLines.remove(ol.getProductLineID());
-                }
-            }
-        }
-    }    
-    /**
-     * This method searches our orderLines HashMap and adds the number of items that match out productID parameter.
-     * @param productID the integer passed in should be the value of the productID for the product we are looking for. 
-     * @return totalProduct is the total number of items of the specified product in our order.
-     */
-    public int getQuantityOfProduct(int productID)
-    {
-        //local variables to track our running total and to assign our product in each cycle of our loop.
-        int totalProduct = 0;
-        Product p;
-        //for each loop cycling all entries in our HashMap
-        for(OrderLine x : orderLines.values())
-        {
-            //sets p to our current product and checks for a match.
-            p = x.getProduct();
-            if(p.getProductID() == productID)
-            {
-                //if matched we add to our running total.
-                totalProduct = totalProduct + x.getQuantity();
-            }
-        }
-        //returns our running total
-        return totalProduct;
-    }
-    
-    /**
-     * A method that returns an integer to be used when creating our order lines.
-     * @return we return the size of our orderLines HashMap incremented by 1.
-     */
-    public int generateUniqueOrderLineID()
-    {
-        DBManager db = new DBManager();
-        return db.getNextOrderLineID();
     }
     
 }

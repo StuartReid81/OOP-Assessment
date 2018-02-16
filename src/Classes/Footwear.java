@@ -56,6 +56,10 @@ public class Footwear extends Product{
     }
     
     
+    /**
+     * this method concatenates the values of our footwear instance and returns them as a string
+     * @return - string containing a description of our instance
+     */
     @Override
     public String toString()
     {

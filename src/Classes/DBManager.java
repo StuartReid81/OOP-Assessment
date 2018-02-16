@@ -819,12 +819,12 @@ public class DBManager {
     
     
     /**
-     * 
-     * @return 
+     * This method loads all orders from our database and stores them in a hashmap
+     * @return - Hashmap is returned from method containing all orders found
      */
     public HashMap<Integer, Order> loadAllOrders()
     {
-    
+        //create our hashmap
         HashMap<Integer, Order> orders = new HashMap<>();
         
         try 
@@ -835,6 +835,7 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //String containing our sql query
             String sql = "Select * From ORDERSTABLE";
             //instantiating our result set
             ResultSet rst;
@@ -842,16 +843,19 @@ public class DBManager {
             rst = stmt.executeQuery(sql);
                 
             
-            
+            //loops all rows returned
             while(rst.next())
             {
+                //creates an order variable
                 Order order = new Order();
+                //stores row values to our order variable
                 order.setOrderID(rst.getInt("ORDERID"));
                 order.setCustID(rst.getInt("CUSTID"));
                 order.setOrderDate(rst.getDate("ORDERDATE"));
                 order.setStatus(rst.getString("STATUS"));
                 order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
                 order.setOrderLines(loadOrderLines(order.getOrderID()));
+                //adds order variable to our hashmap
                 orders.put(order.getOrderID(), order);
             }
         //catch passing out any returned error messages to the console
@@ -859,14 +863,19 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returns the hashmap of orders
         return orders;
     }
     
     
-    
+    /**
+     * This method checks our database for any orderlines that matche the ID passed in to it
+     * @param id - the OrderID of the orderlines we are looking for
+     * @return  - the method returns a hashmap of orederlines
+     */
     public HashMap<Integer, OrderLine> loadOrderLines(int id)
     {
-    
+        // we create our hashmap
         HashMap<Integer, OrderLine> orderLines = new HashMap<>();
         
         try 
@@ -877,6 +886,7 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql statement
             String sql = "Select * From ORDERLINESTABLE Where ORDERID = " + id + "";
             //instantiating our result set
             ResultSet rst;
@@ -884,17 +894,21 @@ public class DBManager {
             rst = stmt.executeQuery(sql);
                 
             
-            
+            //loops through returned rows
             while(rst.next())
             {
+                //creates an orderline to store our result
                 OrderLine ol = new OrderLine();
+                //stores returned values to ol
                 ol.setOrderID(rst.getInt("ORDERID"));
                 ol.setProductLineID(rst.getInt("ORDERLINEID"));
+                //takes the product ID and calls our find product method
                 Product p = findProduct(rst.getInt("PRODUCTID"));
                 ol.setProduct(p);
                 ol.setQuantity(rst.getInt("QUANTITY"));
                 ol.setLineTotal(rst.getDouble("LINETOTAL"));
                 
+                //adds order line to our hashmap
                 orderLines.put(ol.getProductLineID(), ol);
             }
         //catch passing out any returned error messages to the console
@@ -902,10 +916,18 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returns our hashmap of orderlines
         return orderLines;
     }
 
+    
+    /**
+     * This method returns the staff member with a matching username
+     * @param inputUsername - parameter passed in holding the desired username
+     * @return - the method returns a staff member
+     */
     public Staff findStaff(String inputUsername) {
+        //instance of our staff class created
         Staff staff = new Staff();
         try 
         {
@@ -915,14 +937,17 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql statemnt
             String sql = "Select * From STAFFTABLE Where USERNAME = '" + inputUsername.trim() + "'";
             //instantiating our result set
             ResultSet rst;
             //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
+            //if the query returns an entry
             if(rst.next())
             {
+                //store returned values to our staff variable
                 staff.setUserID(rst.getInt("USERID"));
                 staff.setUserName(rst.getString("USERNAME"));
                 staff.setPassword(rst.getString("PASSWORD"));
@@ -931,8 +956,10 @@ public class DBManager {
                 staff.setPosition(rst.getString("POSITION"));
                 staff.setSalary(rst.getDouble("SALARY"));
             }
+            //if there are no matching entries in the database
             else
             {
+                //sets the staff variable to null
                 staff = null;
             }
         //catch passing out any returned error messages to the console
@@ -940,10 +967,17 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //return variable staff
         return staff;
     }
 
+    
+    /**
+     * method that checks database for max productID and increments it by one
+     * @return - method returns an int representing the next ID to be used
+     */
     public int getNextProductID() {
+        //creatingour integer and setting it to one
         int next = 1;
         try 
         {
@@ -953,15 +987,19 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //rstring containing our sql statement
             String sql = "Select MAX(PRODUCTID) From PRODUCTSTABLE";
             //instantiating our result set
             ResultSet rst;
             //running our query and storing to our result set
             rst = stmt.executeQuery(sql);
                 
+            //if query returns any results
             if(rst.next())
             {
-                next = rst.getInt(1);              
+                //sets variable to returned result
+                next = rst.getInt(1);           
+                //increments by one
                 next++;
                 
             }
@@ -971,12 +1009,19 @@ public class DBManager {
             System.out.println(message);
         }
         
+        //returns our int variable
         return next;        
     }
 
+    
+    /**
+     * this method takes in an ID and searches the database for the corresponding order
+     * @param id - OrderID of the order we are looking for
+     * @return - returns an instance of our order class
+     */
     public Order loadAnOrder(int id) 
     {
-            
+        //creates an instance of the order class
         Order order = new Order();
         
         try 
@@ -987,6 +1032,7 @@ public class DBManager {
             Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
             //creates a statment using our connection
             Statement stmt = conn.createStatement();
+            //string containing our sql query
             String sql = "Select * From ORDERSTABLE Where ORDERID = " + id + "";
             //instantiating our result set
             ResultSet rst;
@@ -994,15 +1040,16 @@ public class DBManager {
             rst = stmt.executeQuery(sql);
                 
             
-            
-            while(rst.next())
+            //if the query returns a row
+            if(rst.next())
             {
-                order = new Order();
+                //sets our returned values to our order variable
                 order.setOrderID(rst.getInt("ORDERID"));
                 order.setCustID(rst.getInt("CUSTID"));
                 order.setOrderDate(rst.getDate("ORDERDATE"));
                 order.setStatus(rst.getString("STATUS"));
                 order.setOrderTotal(rst.getDouble("ORDERTOTAL"));
+                //calls our load orderlines method to create our hashmap of orderlines
                 order.setOrderLines(loadOrderLines(order.getOrderID()));
             }
         //catch passing out any returned error messages to the console
@@ -1010,7 +1057,7 @@ public class DBManager {
             String message = ex.getMessage();
             System.out.println(message);
         }
+        //returns our order
         return order;
     }
-
 }

@@ -20,12 +20,14 @@ public class User {
     private String firstName;
     private String lastName;
     
+    
     //getters
     public int getUserID(){return userID;}
     public String getUsername(){return username;}
     public String getPassword(){return password;}
     public String getFirstName(){return firstName;}
     public String getLastName(){return lastName;}
+    
     
     //setters
     public void setUserID(int userID){this.userID = userID;}
@@ -34,10 +36,12 @@ public class User {
     public void setFirstName(String firstName){this.firstName = firstName;}
     public void setLastName(String lastName){this.lastName = lastName;}
     
+    
     /**
      *  Default Constructor creating an instance of our user class without defining values for the attributes.
      */
     public User(){}
+    
     
     /**
      * Overloaded Constructor
