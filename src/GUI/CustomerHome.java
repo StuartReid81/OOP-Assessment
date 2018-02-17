@@ -9,27 +9,37 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 /**
- * @date 23/11/2017
+ * @date created 23/11/2017 
+ * @date commented 18/2/2018
  * @author Stuart Reid
  * Class defining an instance of our Customer Home page.
  */
 public class CustomerHome extends javax.swing.JFrame {
 
     //attributes
+    
+    //global variable holding our logged in customer
     Customer cust;
-    DBManager db;
+
+    //global variable holding our users basket
     HashMap<Integer, OrderLine> basket;
+
     
     /**
      * Creates new form CustomerHome
+     * initialises form components
      */
     public CustomerHome() {
         initComponents();
     }
     
+    
     /**
      * Creates new form CustomerHome
-     * @param cust 
+     * initialises form components
+     * maps customer parameter to our global variable
+     * sets our welcome label with custom welcome message
+     * @param cust - parameter holding our logged in user
      */
     public CustomerHome(Customer cust) {
         initComponents();
@@ -37,16 +47,22 @@ public class CustomerHome extends javax.swing.JFrame {
         welcomeLbl.setText(this.cust.displayGreeting());
     }
     
+    
     /**
      * Creates new form CustomerHome
-     * @param cust
-     * @param basket 
+     * initialises form components
+     * maps customer parameter to our global variable
+     * maps our basket parameter to our basket global variable
+     * sets our welcome label with custom welcome message
+     * @param cust - parameter holding our logged in user
+     * @param basket - parameter passed in holding a hashmap of orderlines representing users shopping basket
      */
     public CustomerHome(Customer cust, HashMap<Integer, OrderLine> basket)
     {
         initComponents();
         this.cust = cust;
         this.basket = basket;
+        welcomeLbl.setText(this.cust.displayGreeting());
     }
 
 
@@ -147,13 +163,25 @@ public class CustomerHome extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click event for our edit button
+     * @param evt 
+     */
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        // TODO add your handling code here:
+        //creates instance of our Edit Details form passing in our logged in customer and their basket
         EditDetails edt = new EditDetails(cust, basket);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         edt.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
 
+    
+    /**
+     * on click event for un registering our logged in user
+     * @param evt 
+     */
     private void unregBnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unregBnActionPerformed
         
         //creating a confirmation dialogue and storeing the result to int o
@@ -162,40 +190,72 @@ public class CustomerHome extends javax.swing.JFrame {
         //if user selects yes
         if(o == 0)
         {
+            //changels the welcome label text
             welcomeLbl.setText("You heve been de-registered!");
-            db = new DBManager();
+            //creates instance of our database manager class
+            DBManager db = new DBManager();
+            //calls delete customer method on dbmanager passing in the logged in customer
             db.deleteCustomer(cust);
 
+            //displays pop up message with confirmation of delete
             infoBox("Your profile has been deleted!\nClose this window to continue.","USER STATUS");
 
+            //creates new instance of our main menu
             Menu mnu = new Menu();
+            //closes current form
             this.dispose();
+            //makes new form visible
             mnu.setVisible(true);
         }
     }//GEN-LAST:event_unregBnActionPerformed
 
+    
+    /**
+     * on click event for our browse button
+     * @param evt 
+     */
     private void browseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBtnActionPerformed
+        //creates new instance of our view product form passing in our logged in customer and their shopping basket
         ViewProducts view = new ViewProducts(cust, basket);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         view.setVisible(true);
     }//GEN-LAST:event_browseBtnActionPerformed
 
+    
+    /**
+     * on click event for our log out button
+     * @param evt 
+     */
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        //sets cust global variable to null
         cust = null;
+        //creates pop up with confirmation
         infoBox("You have been logged out!\nClose this window to return to the main menu.","USER STATUS");
+        //creates new instance of our main menuform passing in a null valued customer as a parameter
         Menu mnu = new Menu(cust);
+        //closes current form
         this.dispose();
+        //makes new form visible
         mnu.setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     
-    
+    /**
+     * on click event for our view orders button
+     * @param evt 
+     */
     private void viewOrdersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewOrdersBtnActionPerformed
+        //creates new instance of our view orders form passing in our logged in customer and their shopping basket
         ViewOrders viewO = new ViewOrders(cust, basket);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         viewO.setVisible(true);
     }//GEN-LAST:event_viewOrdersBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -231,6 +291,12 @@ public class CustomerHome extends javax.swing.JFrame {
         });
     }
 
+    
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);

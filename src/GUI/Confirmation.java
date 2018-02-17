@@ -8,21 +8,32 @@ package GUI;
 import Classes.*;
 
 /**
- *
- * @author StuartR
+ * @Date 18/2/2018 - updated with comments
+ * @author Stuart Reid
  */
 public class Confirmation extends javax.swing.JFrame {
 
+    //Global variable holding our logged in customer
     Customer cust;
+    
+
     /**
      * Creates new form Confirmation
+     * initialises components
      */
     public Confirmation() {
         initComponents();
     }
     
+    /**
+     * Creates new Confirmation form
+     * initialises components
+     * stores parameter to global customer instance
+     * @param cust this is the instance of customer holding our logged in user
+     */
     public Confirmation(Customer cust){initComponents(); this.cust = cust;}
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -75,9 +86,17 @@ public class Confirmation extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click event for our back button
+     * @param evt - un-used parameter
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates new Customer home form passing in our logged in user as a parameter
         CustomerHome cHome = new CustomerHome(cust);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         cHome.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
