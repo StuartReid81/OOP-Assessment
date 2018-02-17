@@ -12,14 +12,19 @@ import Classes.Staff;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author angel
+ * @Date 17/2/2018 - updated with comments
+ * @author Stuart Reid
  */
 public class AddProduct extends javax.swing.JFrame {
 
+    //staff variable to track logged in user
     Staff staff;
+    
+    
     /**
      * Creates new form AddProduct
+     * initialises components and sets variable fields to hidden
+     * instantiates staff variable
      */
     public AddProduct() {
         initComponents();
@@ -29,6 +34,12 @@ public class AddProduct extends javax.swing.JFrame {
     }
     
     
+    /**
+     * Creates new form AddProduct
+     * initialises components and sets variable fields to hidden
+     * maps staff variable to passed in parameter
+     * @param staff - this holds the logged in user we pass to the new form
+     */
     public AddProduct(Staff staff)
     {
         initComponents();
@@ -197,81 +208,135 @@ public class AddProduct extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click method for our clothing radial button
+     * @param evt un-used parameter
+     */
     private void clothRadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clothRadBtnActionPerformed
+        //sets footwear radial button to false
         footRadBtn.setSelected(false);
+        //sets variable buttons to clothing settings and makes them visible
         varLbl.setText("MEASUREMENT:");
-        varLbl.setVisible(true);
+        varLbl.setVisible(true);   
         varTxtBx.setVisible(true);
     }//GEN-LAST:event_clothRadBtnActionPerformed
 
+    
+    /**
+     * on click method for our footwear radial button
+     * @param evt un-used parameter
+     */
     private void footRadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_footRadBtnActionPerformed
+        //sets clothing radial button to false
         clothRadBtn.setSelected(false);
+        //sets variable buttons to clothing settings and makes them visible
         varLbl.setText("SIZE:");
         varLbl.setVisible(true);
         varTxtBx.setVisible(true);
     }//GEN-LAST:event_footRadBtnActionPerformed
 
+    
+    /**
+     * On click action for our clear button
+     * @param evt un-used parameter
+     */
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        //sets all text feilds to blank and hides variable feilds
         varLbl.setVisible(false);
         varTxtBx.setVisible(false);
         varTxtBx.setText("");
         nameTxtBx.setText("");
         priceTxtBx.setText("");
         stockTxtBx.setText("");
+        //unchecks both radial buuttons
         categoryGroup.clearSelection();
     }//GEN-LAST:event_clearBtnActionPerformed
 
+    
+    /**
+     * on click method for our back button
+     * @param evt un-used parameter
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates instance of our staff view products page passing in our logged in staff member as a parameter
         StaffViewProducts svp = new StaffViewProducts(staff);
+        //closes current form
         this.dispose();
+        //opens new form
         svp.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
+    /**
+     * on click method for our submit button
+     * @param evt 
+     */
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        
+        //if any of the feilds are empty
         if(varTxtBx.getText().equals("") ||
         nameTxtBx.getText().equals("") ||
         priceTxtBx.getText().equals("") ||
         stockTxtBx.getText().equals(""))
         {
+            //pop up displaying error message
             infoBox("Please complete all fields before attempting to add an item!","ITEM ERROR");
         }
         else
         {
+            //creates db manager instance
             DBManager db = new DBManager();
             try{
+                //attempts to create double variable and parse user input for price
                 Double price = Double.parseDouble(priceTxtBx.getText());
                 try{
+                    //attempts to create integer and parse user input for stock
                     int stock = Integer.parseInt(stockTxtBx.getText());
 
-
+                    //if clothing radial button is selected
                     if(clothRadBtn.isSelected())
                     {                    
+                        //creates instance of the clothing class using user input with overloaded constructor
                         Clothing cl = new Clothing(db.getNextProductID(), nameTxtBx.getText(), price, stock, varTxtBx.getText());
+                        //saves clothing instance to our database
                         db.saveProduct(cl);
+                        //pop up confirmation
                         infoBox("Item has been added to our catalogue!","ITEM ADDED");
                     }
+                    //if footwear radial button is selected
                     else
                     {
                         try{
+                            //attempts to create an integer parsing user input for our size value
                             int size = Integer.parseInt(varTxtBx.getText());
+                            //creates instance of footwear using user input with our overloaded constructor
                             Footwear ft = new Footwear(db.getNextProductID(), nameTxtBx.getText(), price, stock, size);
+                            //saves our footwear instance to the database
                             db.saveProduct(ft);
+                            //pop up confirmation
                             infoBox("Item has been added to our catalogue!","ITEM ADDED");
                         } catch(Exception e){
+                            //error message pop up for size user input error
                             infoBox("Please only enter a numeric value for the item size!","INPUT ERROR");
                         }
-                        
                     }
                 }catch (Exception e){
-                infoBox("Please only enter a numeric value for a stock level!","INPUT ERROR");
+                    //error message for stock level input
+                    infoBox("Please only enter a numeric value for a stock level!","INPUT ERROR");
                 }
             }catch (Exception e) {
+                //error message for price input
                 infoBox("Please only enter a numeric value for the item price!","INPUT ERROR");
             }
         }
     }//GEN-LAST:event_submitBtnActionPerformed
 
-    
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
