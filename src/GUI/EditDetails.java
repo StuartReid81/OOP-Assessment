@@ -268,6 +268,7 @@ public class EditDetails extends javax.swing.JFrame {
         titleLbl.setText("User Updated");
         //sets our logged in customer to our new data
         cust = newCust;
+        //loads customers orders from the database
         cust.setOrders(db.loadCustomersOrders(cust.getUserID()));
         }
     }//GEN-LAST:event_submitBtnActionPerformed
