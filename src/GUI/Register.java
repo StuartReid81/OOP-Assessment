@@ -6,6 +6,7 @@
 package GUI;
 import Classes.*;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 
 /**
  * @date 19/11/2017
@@ -223,17 +224,24 @@ public class Register extends javax.swing.JFrame {
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
         Customer newCust;
         db = new DBManager();
-        if(db.findCustomer(userNameTxtBx.getText())== null)
+        if(validateLength(0,30,userNameTxtBx.getText()) == false  || validateLength(5,20,passwordTxtBx.getText()) == false || validateLength(0,20,firstNameTxtBx.getText()) == false || validateLength(0,20,lastNameTxtBx.getText()) == false || validateLength(0,50,houseNumTxtBx.getText()) == false || validateLength(0,50,streetTxtBx.getText()) == false || validateLength(0,20,townTxtBx.getText()) == false || validateLength(0,10,postcodeTxtBx.getText()) == false)
         {
-            HashMap<Integer, Order> orders = new HashMap<>();
-            newCust = new Customer(db.getNextUserID(), userNameTxtBx.getText().toLowerCase(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
-
-            db.saveCustomer(newCust);
-            titleLbl.setText("User Created");
+            infoBox("Please ensure that the following collumns do not excede the maximum number of characters\nFirst Name max: 20\nLast Name max: 20\nHouse/Flat Number max: 50\nStreet max: 50\nTown max: 20\nPostcode max: 10\n\nYour Password should be between 5 and 20 characters","INPUT ERROR");
         }
         else
         {
-            titleLbl.setText("This username is already taken!");
+            if(db.findCustomer(userNameTxtBx.getText())== null)
+            {
+                HashMap<Integer, Order> orders = new HashMap<>();
+                newCust = new Customer(db.getNextUserID(), userNameTxtBx.getText().toLowerCase(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
+
+                db.saveCustomer(newCust);
+                titleLbl.setText("User Created");
+            }
+            else
+            {
+                titleLbl.setText("This username is already taken!");
+            }
         }
     }//GEN-LAST:event_submitBtnActionPerformed
 
@@ -265,6 +273,31 @@ public class Register extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_backToLoginBtnActionPerformed
 
+    
+    public boolean validateLength(int min, int max, String input)
+    {
+        if(input.length() <= max && input.length() >= min)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
