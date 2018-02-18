@@ -259,10 +259,8 @@ public class EditDetails extends javax.swing.JFrame {
         //if all feilds are valid
         else
         {
-        //create a new hashmap of orders
-        HashMap<Integer, Order> orders = new HashMap<>();
         //pass user input to our overloaded customer constructor
-        newCust = new Customer(cust.getUserID(), userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);     
+        newCust = new Customer(cust.getUserID(), userNameTxtBx.getText(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), null, true);     
         //calling our update method paassing in our existing customer and our new customer
         db.updateCustomer(cust, newCust);
 
@@ -270,6 +268,7 @@ public class EditDetails extends javax.swing.JFrame {
         titleLbl.setText("User Updated");
         //sets our logged in customer to our new data
         cust = newCust;
+        cust.setOrders(db.loadCustomersOrders(cust.getUserID()));
         }
     }//GEN-LAST:event_submitBtnActionPerformed
 
