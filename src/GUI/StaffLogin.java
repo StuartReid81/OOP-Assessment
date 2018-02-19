@@ -10,14 +10,18 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author angel
+ * @date - 19/2/2018 - comments added - sr
+ * @author Stuart Reid
  */
 public class StaffLogin extends javax.swing.JFrame {
 
+    //global variable holding our logged in customer
     Staff staff;
+    
+    
     /**
      * Creates new form StaffLogin
+     * initialises components
      */
     public StaffLogin() {
         initComponents();
@@ -47,12 +51,6 @@ public class StaffLogin extends javax.swing.JFrame {
         titleLbl.setText("STAFF LOGIN");
 
         userNameLbl.setText("USERNAME:");
-
-        userNameTxtBx.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userNameTxtBxActionPerformed(evt);
-            }
-        });
 
         passwordLbl.setText("PASSWORD:");
 
@@ -117,23 +115,39 @@ public class StaffLogin extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our back button
+     * @param evt 
+     */
     private void mainMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainMenuBtnActionPerformed
-
+            //creates new instance of our main menu form
             Menu menu = new Menu();
+            //closes current form
             this.dispose();
+            //sets new form to visible
             menu.setVisible(true);
-        
     }//GEN-LAST:event_mainMenuBtnActionPerformed
 
+    
+    /**
+     * on click for log in
+     * @param evt 
+     */
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        //on click for Login button - we will take in user input and search DB for details matching input
+        //creates new instance of dbmanager class
         DBManager db = new DBManager();
+        //sets user input to a string variable
         String inputUsername = userNameTxtBx.getText().toLowerCase();
+        //creates staff member instance passing user input in to db manager class
         Staff myStaff = db.findStaff(inputUsername);
+        //if no staff meember returned
         if (myStaff == null)
         {
+            //error message displayed
             titleLbl.setText("Username or Password incorrect!");
         }
+        //if staff member returned
         else
         {
             //store user input in a character array
@@ -142,32 +156,37 @@ public class StaffLogin extends javax.swing.JFrame {
             char[] validPassword = myStaff.getPassword().toCharArray();
             //comparing arrays and returning true or fasle
             boolean pwCorrect = Arrays.equals(passwordInput, validPassword);
-            String inputUserName = userNameTxtBx.getText();
-            String userName = myStaff.getUsername();
-            boolean unCorrect = (inputUserName.equalsIgnoreCase(userName));
 
-            if (unCorrect && pwCorrect)
+            //if password matches 
+            if (pwCorrect)
             {
-
+                    //mapping our logged in user to global variable
                     staff = myStaff;
+                    //confirmation pop up displayed
                     infoBox("You are now logged in!","LOGGED IN");
+                    //creates new instance of staff home form passing in logged in staff member
                     StaffHome sh = new StaffHome(staff);
+                    //closes existing form
                     this.dispose();
+                    //sets new form to visible
                     sh.setVisible(true);
 
             }
+            //if passwords dont match
             else
             {
+                //error message displayed
                 titleLbl.setText("Username or Password incorrect!");
             }
         }
     }//GEN-LAST:event_loginBtnActionPerformed
 
-    private void userNameTxtBxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameTxtBxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userNameTxtBxActionPerformed
-
     
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */   
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);

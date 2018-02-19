@@ -10,15 +10,17 @@ import javax.swing.JOptionPane;
 
 /**
  * @date 19/11/2017
+ * @date commented 19/2/2018
  * @author Stuart Reid
  * Class defining an instance of our user registration page.
  */
 public class Register extends javax.swing.JFrame {
 
-    Customer cust;
-    DBManager db;
+    //global variable holding our hashmap of orderlines that make up our shopping basket
     HashMap<Integer, OrderLine> basket;
+    //boolean confirming if page was redirecred via view basket page
     boolean fromBasket = false;
+    
     
     /**
      * Creates new form Register
@@ -26,13 +28,14 @@ public class Register extends javax.swing.JFrame {
     public Register() {
         initComponents();
     }
+
     
-    public Register(Customer cust)
-    {
-        initComponents();
-        this.cust = cust;
-    }
-    
+    /**
+     * overloaded constructor crating instance of Register form
+     * initialises components and maps parameters to global variables
+     * @param fromBasket - boolean set to true if page has been redirected via viewbasket
+     * @param basket - hashmap of orderlines
+     */
     public Register(boolean fromBasket, HashMap<Integer, OrderLine> basket)
     {
         initComponents();
@@ -41,7 +44,6 @@ public class Register extends javax.swing.JFrame {
     }
 
 
-        
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -221,30 +223,51 @@ public class Register extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our submit button
+     * @param evt 
+     */
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
+        //names customer variable
         Customer newCust;
-        db = new DBManager();
+        //creates new DBManager
+        DBManager db = new DBManager();
+        //if any of the collums are not the correct length
         if(validateLength(0,30,userNameTxtBx.getText()) == false  || validateLength(5,20,passwordTxtBx.getText()) == false || validateLength(0,20,firstNameTxtBx.getText()) == false || validateLength(0,20,lastNameTxtBx.getText()) == false || validateLength(0,50,houseNumTxtBx.getText()) == false || validateLength(0,50,streetTxtBx.getText()) == false || validateLength(0,20,townTxtBx.getText()) == false || validateLength(0,10,postcodeTxtBx.getText()) == false)
         {
+            //error pop up messge displayed
             infoBox("Please ensure that the following collumns do not excede the maximum number of characters\nFirst Name max: 20\nLast Name max: 20\nHouse/Flat Number max: 50\nStreet max: 50\nTown max: 20\nPostcode max: 10\n\nYour Password should be between 5 and 20 characters","INPUT ERROR");
         }
+        //if all feilds meet required length
         else
         {
+            //if the username is not already taken
             if(db.findCustomer(userNameTxtBx.getText())== null)
             {
+                //empty hashmap of orders created
                 HashMap<Integer, Order> orders = new HashMap<>();
+                //new customer created using user input and overloaded constructor
                 newCust = new Customer(db.getNextUserID(), userNameTxtBx.getText().toLowerCase(), passwordTxtBx.getText(), firstNameTxtBx.getText(), lastNameTxtBx.getText(), houseNumTxtBx.getText(), streetTxtBx.getText(), townTxtBx.getText(), postcodeTxtBx.getText(), orders, true);
-
+                //calls save method to add customer to database
                 db.saveCustomer(newCust);
+                //cofirmation displayed
                 titleLbl.setText("User Created");
             }
+            //if user name already in use
             else
             {
+                //error message displayed
                 titleLbl.setText("This username is already taken!");
             }
         }
     }//GEN-LAST:event_submitBtnActionPerformed
 
+    
+    /**
+     * on click method that sets all text entry fields to empty
+     * @param evt 
+     */
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         titleLbl.setText("Register New Customer");
         userNameTxtBx.setText("");
@@ -257,23 +280,43 @@ public class Register extends javax.swing.JFrame {
         postcodeTxtBx.setText("");
     }//GEN-LAST:event_clearBtnActionPerformed
 
+    
+    /**
+     * on click event for our back button
+     * @param evt 
+     */
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
-        
+        //if not redirected from the view basket
         if(!fromBasket)
         {
+            //creates new login form
             CustomerLogin login = new CustomerLogin();
-            login.setVisible(true);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
+            login.setVisible(true);
+            
         }
+        //if redirect from view basket
         else
         {
+            ///creates new log in form passing in global variables
             CustomerLogin login = new CustomerLogin(fromBasket, basket);
-            login.setVisible(true);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
+            login.setVisible(true);
         }
     }//GEN-LAST:event_backToLoginBtnActionPerformed
 
     
+    /**
+     * A method to for user input validation
+     * @param min - int holding our minimum required length for our string
+     * @param max - int holding the maximum required length for our string
+     * @param input - the string we will be testing
+     * @return - returns true if string is the correct length
+     */
     public boolean validateLength(int min, int max, String input)
     {
         if(input.length() <= max && input.length() >= min)

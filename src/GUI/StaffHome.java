@@ -9,13 +9,21 @@ import Classes.Staff;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author angel
+ * @date 19/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class StaffHome extends javax.swing.JFrame {
 
-        Staff staff;
+    //global variable holding our logged in staff member
+    Staff staff;
     
+    
+    /**
+     * constructor taking in a staff member as a parameter
+     * initialises components and maps parameter to global variable
+     * displays personalised greeting
+     * @param staff 
+     */
     public StaffHome(Staff staff)
     {
         initComponents();
@@ -23,13 +31,16 @@ public class StaffHome extends javax.swing.JFrame {
         welcomeLbl.setText(staff.displayGreeting());
     }
     
+    
     /**
      * Creates new form StaffHome
+     * initialises components of form
      */
     public StaffHome() {
         initComponents();
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -102,35 +113,66 @@ public class StaffHome extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our log out button
+     * @param evt 
+     */
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        
+        //pop up confirmation
         infoBox("You are now logged out!\nPlease Close this box to return to the main menu", "LOGGED OUT");
-        
+        //creates instance of our menu
         Menu menu = new Menu();
+        //closes current form
         this.dispose();
+        //sets new form to visible 
         menu.setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
 
+    
+    /**
+     * on click for our modify products button
+     * @param evt 
+     */
     private void modBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modBtnActionPerformed
+        //if staff role is not admin
         if(!staff.getPosition().equals("Admin"))
         {
+            //error message pop up
             infoBox("You must be an Admin to modify products","Access Denied");
         }
+        //if staff member is an admin
         else
         {
+            //creates new instance of our staff view products form passing in our logged in staff member as a parameter
             StaffViewProducts svp = new StaffViewProducts(staff);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
             svp.setVisible(true);
         }
     }//GEN-LAST:event_modBtnActionPerformed
 
+    
+    /**
+     * on click for our view orders button
+     * @param evt 
+     */
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
+        //creates new instance of our view orders page passing in global variable
         StaffViewOrders svo = new StaffViewOrders(staff);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         svo.setVisible(true);
     }//GEN-LAST:event_viewBtnActionPerformed
 
     
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */    
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);

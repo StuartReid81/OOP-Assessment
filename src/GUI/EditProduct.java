@@ -10,7 +10,6 @@ import Classes.DBManager;
 import Classes.Footwear;
 import Classes.Product;
 import Classes.Staff;
-import static GUI.EditDetails.infoBox;
 import javax.swing.JOptionPane;
 
 
