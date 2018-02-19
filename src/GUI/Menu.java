@@ -5,31 +5,38 @@
  */
 package GUI;
 import Classes.*;
-import java.util.HashMap;
 
 /**
  * @date 13/11/2017
+ * @date commented 19/2/2018
  * @author Stuart Reid
  * Class defining an instance of our main menu page.
  */
 public class Menu extends javax.swing.JFrame {
 
+    //global variable holding a logged in user
     Customer cust;
-    DBManager db;
-    
+
+
     /**
-     * Creates new form Menu
+     * Creates new form Menu and initialises components
      */
     public Menu() {
         initComponents();
     }
     
 
-    
-        public Menu(Customer cust){
+    /**
+     * Creates new for taking in an instance of customer class
+     * initialises components
+     * @param cust - passed in instance of our customer class representing the logged in user
+     */
+    public Menu(Customer cust){
         initComponents();
         this.cust = cust;
     }
+    
+    
     /**
      * This method is called from within the constructor to initialise the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -103,34 +110,72 @@ public class Menu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our staff login button
+     * @param evt 
+     */
     private void staffLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_staffLoginBtnActionPerformed
+        //creates instance of our staff log in form
         StaffLogin sl = new StaffLogin();
+        //closes current form
         this.dispose();
+        //sets new form to visible
         sl.setVisible(true);
     }//GEN-LAST:event_staffLoginBtnActionPerformed
 
+    
+    /**
+     * on click for our customer log in button
+     * @param evt 
+     */
     private void customerLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerLoginBtnActionPerformed
-        //create an instance of our customer login page if there is no customer currently
-        //logged in
+        //if customer is currently logged in
         if (cust != null)
         {
+            //error message
             menuLbl.setText("Please log out of account!");
         }
+        //if no logged in customer
         else
         {
+            //creates new instance of our log in page
             CustomerLogin login = new CustomerLogin();
+            ///closes current form
             this.dispose();
+            //sets new form to visible
             login.setVisible(true);
         }
     }//GEN-LAST:event_customerLoginBtnActionPerformed
 
+    
+    /**
+     * on click for our view products page
+     * @param evt 
+     */
     private void viewProductBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewProductBtnActionPerformed
-        // TODO add your handling code here:
-        ViewProducts vp = new ViewProducts();
-        this.dispose();
-        vp.setVisible(true);
+        //if customer is currently logged in
+        if (cust != null)
+        {
+            //creates new instance of our view products form
+            ViewProducts vp = new ViewProducts();
+            //closes current form
+            this.dispose();
+            //sets new for to visible
+            vp.setVisible(true);
+        }
+        else
+        {
+            //creates new instance of our view products form passing in our cust global variale
+            ViewProducts vp = new ViewProducts(cust);
+            //closes current form
+            this.dispose();
+            //sets new for to visible
+            vp.setVisible(true);
+        }
     }//GEN-LAST:event_viewProductBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */

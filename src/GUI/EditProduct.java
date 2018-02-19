@@ -10,6 +10,7 @@ import Classes.DBManager;
 import Classes.Footwear;
 import Classes.Product;
 import Classes.Staff;
+import static GUI.EditDetails.infoBox;
 import javax.swing.JOptionPane;
 
 
@@ -36,11 +37,13 @@ public class EditProduct extends javax.swing.JFrame {
     
     
     /**
-     * Overloaded constructor creating new E=
-     * ]-0['[ditProduct form
-     * @param p
-     * @param staff
-     * @param clothing 
+     * Overloaded constructor creating new EditProduct form
+     * @param p - this stores the product we are editing
+     * @param staff - our logged in staff member
+     * @param clothing - boolean value confirming if product is an item of clothing
+     * initialises components
+     * maps parameter values to our global variables
+     * calls our fillIn method to populate data
      */
     public EditProduct(Product p, Staff staff, boolean clothing)
     {
@@ -52,6 +55,7 @@ public class EditProduct extends javax.swing.JFrame {
         fillIn();
     }
 
+    
     /**2
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -188,16 +192,35 @@ public class EditProduct extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click event for our clear button
+     * cals our fill in method to return screen to products current values
+     * @param evt 
+     */
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         fillIn();
     }//GEN-LAST:event_clearBtnActionPerformed
 
+    
+    /**
+     * on click event for our back button
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates an instance of our staff view products page passing in our logged in staff member
         StaffViewProducts svp = new StaffViewProducts(staff);
+        //closes current form
         this.dispose();
+        //sets new form to visible
         svp.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
+    /**
+     * on click event for our submit button
+     * @param evt 
+     */
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
         
         //creating a confirmation dialogue and storeing the result to int o
@@ -206,72 +229,139 @@ public class EditProduct extends javax.swing.JFrame {
         //if user selects yes
         if(o == 0)
         {
+            //if any of the feilds have not been completed
             if(varTxtBx.getText().equals("") ||
             nameTxtBx.getText().equals("") ||
             priceTxtBx.getText().equals("") ||
             stockTxtBx.getText().equals(""))
             {
+                //error pop up
                 infoBox("Please complete all fields before attempting to add an item!","ITEM ERROR");
             }
+            //if all feilds have data in them
             else
             {
-                DBManager db = new DBManager();
-                try{
-                    Double price = Double.parseDouble(priceTxtBx.getText());
+                //if name and var text feilds are within allowed character values
+                if(validateLength(0,20,nameTxtBx.getText()) == true  || validateLength(0,20,varTxtBx.getText()) == true)
+                {
+                    //creates a new instance of our db manager class
+                    DBManager db = new DBManager();
+
                     try{
-                        int stock = Integer.parseInt(stockTxtBx.getText());
+                        //attempts to pasre our user input to a double variable
+                        Double price = Double.parseDouble(priceTxtBx.getText());
+                        try{
+                            //attempts to parse our user input to an integer variable
+                            int stock = Integer.parseInt(stockTxtBx.getText());
 
-
-                        if(clothing)
-                        {                    
-                            Clothing cl = new Clothing(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, varTxtBx.getText());
-                            db.updateClothingItem(cl);
-                            infoBox("Item has been updated!","ITEM AMENDED");
-                        }
-                        else
-                        {
-                            try{
-                                int size = Integer.parseInt(varTxtBx.getText());
-                                Footwear ft = new Footwear(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, size);
-                                db.updateFootwearItem(ft);
+                            //if the item is an article of clothing
+                            if(clothing)
+                            {                    
+                                //create new instance of clothing item with overloaded constructor passin in user input
+                                Clothing cl = new Clothing(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, varTxtBx.getText());
+                                //calls db manager method to update item in database
+                                db.updateClothingItem(cl);
+                                //pop up confirmation messsage
                                 infoBox("Item has been updated!","ITEM AMENDED");
-                            } catch(Exception e){
-                                infoBox("Please only enter a numeric value for the item size!","INPUT ERROR");
                             }
+                            //if the item is from the footwear range
+                            else
+                            {
+                                try{
+                                    //we attempt to parse the user input to an integer variable
+                                    int size = Integer.parseInt(varTxtBx.getText());
+                                    //creates new instance of our footwear class using user input with our overloaded contructor
+                                    Footwear ft = new Footwear(Integer.parseInt(idTxtBx.getText()), nameTxtBx.getText(), price, stock, size);
+                                    //calls our db method to update the item in the database
+                                    db.updateFootwearItem(ft);
+                                    //pop up confirmation
+                                    infoBox("Item has been updated!","ITEM AMENDED");
+                                } catch(Exception e){
+                                    // if the size input is not in the correct format
+                                    infoBox("Please only enter a numeric value for the item size!","INPUT ERROR");
+                                }
 
+                            }
+                        }catch (Exception e){
+                            //if the stock level user input is not in the correct format
+                            infoBox("Please only enter a numeric value for a stock level!","INPUT ERROR");
                         }
-                    }catch (Exception e){
-                    infoBox("Please only enter a numeric value for a stock level!","INPUT ERROR");
+                    }catch (Exception e) {
+                        //if the price user input is not in the correct format
+                        infoBox("Please only enter a numeric value for the item price!","INPUT ERROR");
                     }
-                }catch (Exception e) {
-                    infoBox("Please only enter a numeric value for the item price!","INPUT ERROR");
+                } 
+                //if name and var feild excede allowed charcters
+                else
+                {
+                    //error message pop up
+                    infoBox("Please ensure that the following collumns do not excede the maximum number of characters\n Name max: 20\nMeasurement max: 20","INPUT ERROR");
                 }
-            } 
+            }
         }
     }//GEN-LAST:event_submitBtnActionPerformed
 
     
-    private void fillIn() 
+    /**
+     * A method to for user input validation
+     * @param min - int holding our minimum required length for our string
+     * @param max - int holding the maximum required length for our string
+     * @param input - the string we will be testing
+     * @return - returns true if string is the correct length
+     */
+    public boolean validateLength(int min, int max, String input)
     {
-        idTxtBx.setText("" + p.getProductID());
-        idTxtBx.setEnabled(false);
-        nameTxtBx.setText(p.getProductName());
-        priceTxtBx.setText("" + String.format("%.2f", p.getPrice()));
-        stockTxtBx.setText("" + p.getStockLevel());
-        if(clothing)
+        if(input.length() <= max && input.length() >= min)
         {
-            Clothing c = (Clothing)p;
-            varTxtBx.setText(c.getMeasurement());
+            return true;
         }
         else
         {
-            Footwear f = (Footwear)p;
-            varLbl.setText("SIZE:");
-            varTxtBx.setText("" + f.getSize());
+            return false;
         }
-        
     }
     
+    
+    /**
+     * method used to populate form with global products values
+     */
+    private void fillIn() 
+    {
+        //set id and disable user interaction
+        idTxtBx.setText("" + p.getProductID());
+        idTxtBx.setEnabled(false);
+        //set name
+        nameTxtBx.setText(p.getProductName());
+        //set price in correct format
+        priceTxtBx.setText("" + String.format("%.2f", p.getPrice()));
+        //set stock level
+        stockTxtBx.setText("" + p.getStockLevel());
+        //if clothing
+        if(clothing)
+        {
+            //cast product to clothing subclass
+            Clothing c = (Clothing)p;
+            //set var feild
+            varTxtBx.setText(c.getMeasurement());
+        }
+        //if footwear
+        else
+        {
+            //cast product to footwear subclass
+            Footwear f = (Footwear)p;
+            //set var label text
+            varLbl.setText("SIZE:");
+            //set size 
+            varTxtBx.setText("" + f.getSize());
+        }
+    }
+    
+    
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
