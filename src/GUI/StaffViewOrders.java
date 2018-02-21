@@ -13,23 +13,30 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author angel
+ * @date 21/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class StaffViewOrders extends javax.swing.JFrame {
 
+    //global variable holding our logged in staff member
     Staff staff;
     
     
     /**
      * Creates new form StaffViewOrders
+     * initialises components and calls our fill in table method
      */
     public StaffViewOrders() {
         initComponents();
         fillTable();
     }
 
-    
+    /**
+     * Creates new form StaffViewOrders
+     * initialises components and calls our fill in table method
+     * maps parameter to our global variable
+     * @param staff - parameter holding our logged in staff member
+     */    
     public StaffViewOrders(Staff staff)
     {
         initComponents();
@@ -38,24 +45,36 @@ public class StaffViewOrders extends javax.swing.JFrame {
     }
     
     
+    /**
+     * method that fills out our table with the desired data
+     */
     private void fillTable()
     {
+        //dreates new instance of our database manager
         DBManager db = new DBManager();
+        // creates a new default table model pulling the model from our order table element
         DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        //creates a hashmap and calls our databse to return all the current orders
         HashMap<Integer, Order> orders = db.loadAllOrders();
         
+        //for each order in our hashmap
         for(Integer key : orders.keySet())
         {
+            //creates an array of strings
             String[] data = new String[4];
+            //assings the otder total to a double variable
             double price = orders.get(key).getOrderTotal();
+            //filling each element of the array with our order data
             data[0] = "" + db.findCustomer(orders.get(key).getCustID()).getUsername();
             data[1] = "" + orders.get(key).getOrderID();
             data[2] = "" + orders.get(key).getOrderDate();
             data[3] = "£" + String.format("%.2f", price);
 
+            //adding the array to our table model
             dtm.addRow(data);
         }
         
+        //sets the model to our table
         orderTbl.setModel(dtm);
     }
     
@@ -130,38 +149,66 @@ public class StaffViewOrders extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click event for our back button
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates a new instance of our staff home page passing in our logged in staff member
         StaffHome sh = new StaffHome(staff);
+        //closes the current form
         this.dispose();
+        //sets new form to visible
         sh.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
+    //on click for our view order button
     private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
+        
+        //if there is a row selected
         if(orderTbl.getSelectedRow() != -1)
         {
+            //creates a default table model and sets it to the one on our table
             DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
 
+            //creates an int variable and sets it to the currently selected row
             int row = orderTbl.getSelectedRow();
 
+            //string holding our order id value for conversion to integer
             String idValue = dtm.getValueAt(row, 1).toString();
 
+            //in holding our converted id
             int id = Integer.parseInt(idValue);
 
+            //new instance of our db manager class
             DBManager db = new DBManager();
 
+            //creates a new order and calls our database method to find via id
             Order order = db.loadAnOrder(id);
+            //creates a new instance of our view an order form passing in our logged in staff member and our order
             StaffViewAnOrder svao = new StaffViewAnOrder(staff, order);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
             svao.setVisible(true);
         }
+        //if no row selected
         else
         {
+            //error message displayed
             infoBox("Please select the order you would like to view!","ORDERS");
         }
           
     }//GEN-LAST:event_viewBtnActionPerformed
 
     
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */ 
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);

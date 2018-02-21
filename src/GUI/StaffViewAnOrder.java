@@ -12,24 +12,33 @@ import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author angel
+ * @date 21/02/2018 - commented class - sr
+ * @author Stuart Reid
  */
 public class StaffViewAnOrder extends javax.swing.JFrame {
 
+    //global variable to hold our logged in staff member
     Staff staff;
-    
+    //global variable holding the order we wish to view
     Order order;
     
     
     /**
      * Creates new form StaffViewAnOrder
+     * initialises components
      */
     public StaffViewAnOrder() {
         initComponents();
     }
 
     
+    /**
+     * overloaded constructor creating an instance of our view an order form
+     * initialises components and maps parameters to our global variables
+     * @param staff - parameter holding our logged in customer
+     * @param order - parameter holding our order that we wish to view
+     * calls fill table method
+     */
     public StaffViewAnOrder(Staff staff, Order order)
     {
        initComponents();
@@ -39,15 +48,24 @@ public class StaffViewAnOrder extends javax.swing.JFrame {
     }
     
 
+    /**
+     * method that fills our table with the details of our order
+     */
     private void fillTable()
     {
+        //creates a default table manager and pulls the table model from our gui
         DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        //hash map holding our orderlines
         HashMap<Integer, OrderLine> orderLines = order.getOrderLines();
         
+        //for each orderline in our hashmap
         for(Integer key : orderLines.keySet())
         {
+            //creating an array of strings
             String[] data = new String[4];
+            //mapping total price of orderline to a double variable
             double price = orderLines.get(key).getLineTotal();
+            //filling each element of our array with the orderline values
             data[0] = "" + orderLines.get(key).getProduct().getProductID();
                     
             data[1] = "" + orderLines.get(key).getProduct().getProductName();
@@ -55,14 +73,13 @@ public class StaffViewAnOrder extends javax.swing.JFrame {
             data[2] = "£" + String.format("%.2f", price);
 
             data[3] = "" + orderLines.get(key).getQuantity();
-            
+            //adding array to our table model
             dtm.addRow(data);
         }
-        
+        //setting table model to our table 
         orderTbl.setModel(dtm);
     }
 
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -123,12 +140,21 @@ public class StaffViewAnOrder extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our back button
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates a staff view orders form passing in our logged in staff member
         StaffViewOrders svo = new StaffViewOrders(staff);
+        //closing existing form
         this.dispose();
+        //setting new form to visible
         svo.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -163,7 +189,6 @@ public class StaffViewAnOrder extends javax.swing.JFrame {
             }
         });
     }
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
