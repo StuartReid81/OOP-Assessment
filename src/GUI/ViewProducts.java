@@ -9,13 +9,15 @@ import javax.swing.ListSelectionModel;
 
 
 /**
- * @date 
+ * @date 22/03/2018 - commented - sr
  * @author Stuart Reid
  * class defining an instance of the View Products page
  */
 public class ViewProducts extends javax.swing.JFrame {
     
+    //global variable for our logged in customer
     Customer cust;
+    //global variable holding our shopping basket
     HashMap<Integer, OrderLine> basket;
    
 
@@ -26,11 +28,8 @@ public class ViewProducts extends javax.swing.JFrame {
     public ViewProducts() 
     {
         initComponents();
-        
         basket = new HashMap<>();
-        
         fillCategoryList();
-        
         if (cust == null)
         {
             returnBtn.setText("Return to Main Menu");
@@ -43,21 +42,18 @@ public class ViewProducts extends javax.swing.JFrame {
      * @param cust holds our logged in customer that is passed from previous form
      * @param basket holds our list of items we wish to purchase
      * sets up page and maps basket and cust to parameters passed in. We call the fillCategoryList method and checks for a logged in customer
+     * if basket has not been instantiated then we map it to a new hashmap
      */
     public ViewProducts(Customer cust, HashMap<Integer, OrderLine> basket)
     {
         initComponents();
-        
         this.basket = basket;
         this.cust = cust;
-        
         fillCategoryList();
-        
         if(basket == null)
         {
             this.basket = new HashMap<>();
         }
-        
         if (cust == null)
         {
             returnBtn.setText("Return to Main Menu");
@@ -69,6 +65,7 @@ public class ViewProducts extends javax.swing.JFrame {
      * Creates new form ViewProducts
      * @param cust holds our logged in customer that is passed from previous form
      * sets up page and maps cust to parameter passed in. We call the fillCategoryList method and checks for a logged in customer
+     * basket is mapped to a new hashmap
      */
     public ViewProducts(Customer cust)
     {
@@ -224,7 +221,7 @@ public class ViewProducts extends javax.swing.JFrame {
      * @param evt (un-used)
      */
     private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
-
+        //emptied products list
         productList.clearSelection();
         //if list box selection equals clothing
         if(categoryList.getSelectedValue().equals("Clothing"))
@@ -245,8 +242,7 @@ public class ViewProducts extends javax.swing.JFrame {
                     dlm.addElement(c);
                 });    
             }
-                
-                
+
             //passed the list model to the list for display
             productList.setModel(dlm);
             

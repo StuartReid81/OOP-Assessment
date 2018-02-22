@@ -11,15 +11,20 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author StuartR
+ * @date 22/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class ViewOrders extends javax.swing.JFrame {
 
+    //global variable holding our logged in customer
     Customer cust;
+    //global variable holding our shopping basket
     HashMap<Integer, OrderLine> basket;
+    
+    
     /**
      * Creates new form ViewOrders
+     * initialises components and fills data
      */
     public ViewOrders() {
         initComponents();
@@ -33,6 +38,8 @@ public class ViewOrders extends javax.swing.JFrame {
     /**
      * Creates new form ViewOrders
      * @param cust takes in our logged in customer as a parameter
+     * initialises components and if the customer has any orders the table is filled
+     * maps parameter to global variable
      */
     public ViewOrders(Customer cust)
     {
@@ -44,8 +51,11 @@ public class ViewOrders extends javax.swing.JFrame {
         }
     }
     
+    
     /**
      * Creates new form ViewOrders
+     * initialises components and if the customer has any orders the table is filled
+     * maps parameters to global variables
      * @param cust takes in our logged in customer as a parameter
      * @param basket takes in our basket - not used in this class but for continuity
      */
@@ -60,22 +70,29 @@ public class ViewOrders extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * method to fill data in to our table
+     */
     private void fillTable()
     {
+        //creates default table model and pulls the existing model from our table entity
         DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        //creates a hashmap pulling in the customers order attribute
         HashMap<Integer, Order> orders = cust.getOrders();
         
+        //for each order in our hashmap
         for(Integer key : orders.keySet())
         {
+            //creating array and setting values to the arrays elements
             String[] data = new String[3];
             double price = orders.get(key).getOrderTotal();
             data[0] = "" + orders.get(key).getOrderID();
             data[1] = "" + orders.get(key).getOrderDate();
             data[2] = "£" + String.format("%.2f", price);
-
+            //adding array to a row in our table model
             dtm.addRow(data);
         }
-        
+        //setting table model to our table entity
         orderTbl.setModel(dtm);
     }
     
@@ -157,35 +174,56 @@ public class ViewOrders extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click for our back button
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates new customer home form passing in our logged in customer and our shopping basket
         CustomerHome cHome = new CustomerHome(cust, basket);
+        //closes existing form
         this.dispose();
+        //sets new form to visible
         cHome.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
+    /**
+     * on click for our view an order button
+     * @param evt 
+     */
     private void ViewOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewOrderBtnActionPerformed
+        //if there is a row selected
         if(orderTbl.getSelectedRow() != -1)
         {
+            //creates default table model and pulls the existing model from our table entity
             DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
-
+            //creates in setting it to the selected row index
             int row = orderTbl.getSelectedRow();
-
+            //pulls the data at our id collum for our specified row and maps it to a string variable
             String idValue = dtm.getValueAt(row, 0).toString();
-
+            //parses our string in to an integer
             int id = Integer.parseInt(idValue);
 
-
+            //creates an order mapping it to the item in our orders hashmap with the matching id
             Order order = cust.getOrders().get(id);
+            //creates new view  an order form passing in our logged in customer, the order we wish to view and our shopping basket
             ViewAnOrder vao = new ViewAnOrder(cust, order, basket);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
             vao.setVisible(true);
         }
+        //if nothing selected
         else
         {
+            //error message pop up
             infoBox("Please select the order you would like to view!","ORDERS");
         }
     }//GEN-LAST:event_ViewOrderBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -220,7 +258,13 @@ public class ViewOrders extends javax.swing.JFrame {
             }
         });
     }
-    
+
+
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */       
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
