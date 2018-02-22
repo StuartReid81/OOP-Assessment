@@ -1060,4 +1060,44 @@ public class DBManager {
         //returns our order
         return order;
     }
+
+    
+    /**
+     * method checking if a product exists on an orderline
+     * @return - true if it currently is on an order
+     * @param id - int passed in holding value of item id we are looking for
+     */
+    public boolean isOnOrder(int id) 
+    {
+        //boolean to hold result of search
+        boolean found = false;
+        
+        try{
+            //points our derby database driver
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            //tries to create a connection to the database
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234");
+            //creates a statment using our connection
+            Statement stmt = conn.createStatement();
+            //string containing our sql statement
+            String sql = "Select * From ORDERLINESTABLE Where PRODUCTID = " + id + "";
+            //instantiating our result set
+            ResultSet rst;
+            //running our query and storing to our result set
+            rst = stmt.executeQuery(sql);
+            
+            //if any results are found we set boolean to true
+            if(rst.next())
+            {
+                found = true;
+            }
+                        
+        }catch (ClassNotFoundException | SQLException ex) {
+            String message = ex.getMessage();
+            System.out.println(message);
+        }
+        
+        //returning our result
+        return found;
+    }
 }

@@ -17,15 +17,18 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
- *
- * @author angel
+ * @date 22/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class StaffViewProducts extends javax.swing.JFrame {
 
+    //global variable holding our logged in staff member
     Staff staff;
+    
     
     /**
      * Creates new form StaffViewProducts
+     * initialises components instantiates staff member and fills category list out
      */
     public StaffViewProducts() {
         initComponents();
@@ -33,7 +36,11 @@ public class StaffViewProducts extends javax.swing.JFrame {
         fillCategoryList();
     }
     
-    
+     /**
+     * Creates new form StaffViewProducts
+     * initialises components maps staff member to parameter and fills category list out
+     * @param staff - parameter holding our logged in staff member
+     */
     public StaffViewProducts(Staff staff)
     {
         initComponents();
@@ -166,6 +173,11 @@ public class StaffViewProducts extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * on click triggered when a category value on our list is selected 
+     * @param evt 
+     */
     private void catListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_catListValueChanged
         
         //if list box selection equals clothing
@@ -221,58 +233,109 @@ public class StaffViewProducts extends javax.swing.JFrame {
       
     }//GEN-LAST:event_catListValueChanged
 
+    
+    /**
+     * on click for our add product button 
+     * @param evt 
+     */
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        //creates new add product form passing in our logged in staff member
         AddProduct ap = new AddProduct(staff);
+        //closes existing form
         this.dispose();
+        //sets new form to visible
         ap.setVisible(true);
     }//GEN-LAST:event_addBtnActionPerformed
 
+    
+    /**
+     * on click for our back button
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        //creates new staff home form passing in our logged in staff member
         StaffHome sh = new StaffHome(staff);
+        //closes existing form
         this.dispose();
+        //sets new form to visible
         sh.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    
+    /**
+     * on click for our delete button
+     * @param evt 
+     */
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
                
         //creating a confirmation dialogue and storeing the result to int o
         int o = JOptionPane.showConfirmDialog(null, "This will permanently delete this product from your range!\nDo you wish to continue?","DELETE PRODUCT!",JOptionPane.YES_NO_OPTION);
-        DBManager db;
+        DBManager db = new DBManager();
         //if user selects yes
         if(o == 0)
         {
+            //create list manager pulling model from box
             DefaultListModel dlm = (DefaultListModel)proList.getModel();
-            
+
+            //mapping index to int variable
             int index = proList.getSelectedIndex();
-            
+
+            //creating product and setting it to returned element from list model
             Product p = (Product)dlm.getElementAt(index);
             
-            dlm.remove(index);
-            
-            titleLbl.setText("Item Deleted!");
-            db = new DBManager();
-            db.deleteProduct(p);
+            //if the item is not on any current orders
+            if(!db.isOnOrder(p.getProductID()))
+            {
+                //removing item from model
+                dlm.remove(index);
 
-            infoBox("This item has been deleted!\nClose this window to continue.","PRODUCT DELETED");
+                //confirmation label
+                titleLbl.setText("Item Deleted!");
 
-            proList.setModel(dlm);
+                //delete item from database
+                db.deleteProduct(p);
+
+                //pop up confirmation
+                infoBox("This item has been deleted!\nClose this window to continue.","PRODUCT DELETE");
+
+                //refresh list model
+                proList.setModel(dlm);
+            }
+            //if currently part of an order
+            else
+            {
+                //error message pop up
+                infoBox("This item is currently part of an active order and cannot be deleted!\nClose this window to continue.","PRODUCT DELETE");
+            }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
+    
+    /**
+     * on click for edit button
+     * @param evt 
+     */
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
 
-            DefaultListModel dlm = (DefaultListModel)proList.getModel();
-            
-            int index = proList.getSelectedIndex();
-            
-            Product p = (Product)dlm.getElementAt(index);
+        //create list manager pulling model from box
+        DefaultListModel dlm = (DefaultListModel)proList.getModel();
 
-            boolean cloth = p instanceof Clothing;
-            
-            EditProduct ep = new EditProduct(p, staff, cloth);
-            this.dispose();
-            ep.setVisible(true);
-        
+        //mapping index to int variable
+        int index = proList.getSelectedIndex();
+
+        //creating product and setting it to returned element from list model
+        Product p = (Product)dlm.getElementAt(index);
+
+        //checking if item is from the clothing class and mapping to boolean
+        boolean cloth = p instanceof Clothing;
+
+        //creates new edit product form passing in our logged in staff member
+        EditProduct ep = new EditProduct(p, staff, cloth);
+        //closes existing form
+        this.dispose();
+        //sets new form to visible
+        ep.setVisible(true);
+
     }//GEN-LAST:event_editBtnActionPerformed
 
     
