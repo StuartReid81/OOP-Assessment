@@ -12,36 +12,34 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author angel
+ * @date 22/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class ViewBasket extends javax.swing.JFrame {
 
+    //global variable for our logged in customer
     Customer cust;
+    //global variable for our shopping basket
     HashMap<Integer, OrderLine> basket;
     
 
-    
-    
-    
-    
     /**
      * Creates new form ViewBasket
+     * initialises components - sets cust to null
      */
     public ViewBasket() {
         initComponents();
         cust = null;
     } 
     
-    public ViewBasket(Customer cust)
-    {
-        initComponents();
-        this.cust = cust;
-    }
-    
-
-   
-    
+ 
+    /**
+     * Creates new form ViewBasket
+     * initialises components - maps parameters to our global variables
+     * checks if any items have been added to basket and displays relevant information
+     * @param cust - parameter holding our logged in customer
+     * @param basket - hashmap of orderlines holding our shopping basket
+     */
     public ViewBasket(Customer cust,HashMap<Integer,OrderLine> basket)
     {
         initComponents();
@@ -58,43 +56,59 @@ public class ViewBasket extends javax.swing.JFrame {
         }
     }
 
-    
+
+    /**
+     * method calculating the total cost of the basket
+     */    
     private void calcTotal()
     {
+        //double to hold our running total
         double total = 0;
         
+        //loops through hashmap
         for(Integer key : basket.keySet())
         {
+            //adds total for current orderline to running total
             total = total + (basket.get(key).getProduct().getPrice() * basket.get(key).getQuantity());
         }
         
+        //displays total
         totValueLbl.setText("£" + String.format("%.2f", total));
     }
     
     
+    /**
+     * method that fills our table with desired values
+     */
     private void fillTable()
     {
-    DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
-    
-    
-    for(Integer key : basket.keySet())
-    {
-        String[] data = new String[5];
-        double price = basket.get(key).getProduct().getPrice();
-        data[0] = "" + basket.get(key).getProductLineID();
-        data[1] = "" + basket.get(key).getProduct().getProductID() + "";
-        data[2] = "" + basket.get(key).getProduct().getProductName() + "";
-        data[3] = "£" + String.format("%.2f", price);
-        data[4] = "" + basket.get(key).getQuantity() + "";
+        //creates default table model and pulls the existing model from our table entity
+        DefaultTableModel tableModel = (DefaultTableModel)bsktTbl.getModel();
 
-        
-        tableModel.addRow(data);
+        //loops hashmap
+        for(Integer key : basket.keySet())
+        {
+            //ctring array for adding row
+            String[] data = new String[5];
+            //values mapped to array elements
+            double price = basket.get(key).getProduct().getPrice();
+            data[0] = "" + basket.get(key).getProductLineID();
+            data[1] = "" + basket.get(key).getProduct().getProductID() + "";
+            data[2] = "" + basket.get(key).getProduct().getProductName() + "";
+            data[3] = "£" + String.format("%.2f", price);
+            data[4] = "" + basket.get(key).getQuantity() + "";
+
+            //array added to table model
+            tableModel.addRow(data);
+        }
+
+        //calulating total method called
+        calcTotal();
+
+        //sets table model to our table
+        bsktTbl.setModel(tableModel);
     }
     
-    calcTotal();
-        
-    bsktTbl.setModel(tableModel);
-    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -190,75 +204,116 @@ public class ViewBasket extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
+    /**
+     * on click for our add button
+     * @param evt 
+     */
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        //creates new view orders form passing in our logged in customer and our shopping basket
         ViewProducts view = new ViewProducts(cust, basket);
+        //closes existing form
         this.dispose();
+        //sets new form to visible
         view.setVisible(true);        
     }//GEN-LAST:event_addBtnActionPerformed
 
     
+    /**
+     * on click event for our remove button
+     * @param evt 
+     */
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
-        
+        //if a row is selected
         if(bsktTbl.getSelectedRow() != -1)
         {
+            //creates default table model and pulls the existing model from our table entity
             DefaultTableModel dtm = (DefaultTableModel)bsktTbl.getModel();
+            //if basket is not empty
             if(dtm.getRowCount() != 0)
             {
-
+            //creates in pulling in value from our table
             int row = bsktTbl.getSelectedRow();
+            //sets value for id collum to a string
             String idValue = bsktTbl.getValueAt(row, 0).toString();
+            //parses string to an integer
             int id = Integer.parseInt(idValue);
+            //removes orderline from our hashmap
             basket.remove(id);
+            //removes  row from our table model
             dtm.removeRow(row);
+            //sets table model to our table entity
             bsktTbl.setModel(dtm);
+            //calls our calucate total method
             calcTotal();
             }
+            //if basket is empty
             else
             {
+                //error message pop up
                 infoBox("The basket is empty!\nPlease click \"ADD MORE PRODUCTS\" to continue shoping!","BASKET");
             }
         }
+        //if there is no row selected
         else
         {
+            //error message pop up
             infoBox("Please select the row you would like to remove from your basket!","BASKET");
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
+    
+    /**
+     * on click for our buy button
+     * @param evt 
+     */
     private void buyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyBtnActionPerformed
+        //if no customer is logged in
         if(cust == null)
         {
+            //error message displayed
             infoBox("Please log in to process your order\nIf you do not have an account you will be required to register one!\nPlease close this box to continue.","LOGIN");
+            //creates new login form passing in our shopping basket
             CustomerLogin login = new CustomerLogin(basket);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
             login.setVisible(true);
-            
         }
+        //if customer is logged in
         else
         {
+            //creates DB manager
             DBManager db = new DBManager();
-            
+            //creates new date
             Date date = new Date();
-            
-            
+            //gets value from our label and stores in a string
             String value = totValueLbl.getText().substring(1);
-            
+            //creates an order passing in our overloaded constructor
             Order ord = new Order(db.getNextOrderID(),cust.getUserID(), date, Double.parseDouble(value), "Paid", basket);
-            
+            //saves order to our database
             db.saveOrder(ord);
-            
+            //adds order to our customer order hashmap
             cust.addOrder(ord);
             
+            //for each orderline in out basket hashmap
             for(int key : basket.keySet())
             {
+                //add orderID to our orderlines
                 db.addOrderID(key, ord.getOrderID());
+                //adjust stock levels
+                db.adjustStockLevel(basket.get(key).getProduct().getProductID(), basket.get(key).getQuantity());
             }
 
+            //creates new confirmation form passing in our logged in customer
             Confirmation conf = new Confirmation (cust);
+            //closes existing form
             this.dispose();
+            //sets new form to visible
             conf.setVisible(true);
         }
     }//GEN-LAST:event_buyBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -294,10 +349,18 @@ public class ViewBasket extends javax.swing.JFrame {
         });
     }
 
+    
+    /**
+     * Method defining our pop up box
+     * @param infoMessage - holds the body of our message
+     * @param titleBar  - holds the title of the info box
+     */   
     public static void infoBox(String infoMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, infoMessage, "InfoBox: " + titleBar, JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JTable bsktTbl;

@@ -10,25 +10,37 @@ import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author angel
+ * @date 22/02/2018 - commented - sr
+ * @author Stuart Reid
  */
 public class ViewAnOrder extends javax.swing.JFrame {
 
+    //global variable holding our logged in customer
     Customer cust;
-    
+    //global variable holding the order we wish to view
     Order order;
-    
+    //global variable holding a hashmap of orderlines that represents our shopping cart
     HashMap<Integer, OrderLine> basket;
+    
     
     /**
      * Creates new form ViewAnOrder
+     * initialises components
      */
     public ViewAnOrder() {
         initComponents();
     }
 
     
+    /**
+    * Creates new form ViewAnOrder
+    * initialises components
+    * maps parameters to global variables
+    * calls fill table method
+    * @param cust - parameter holding our logged in customer
+    * @param order - parameter holding the order we wish to view
+    * @param basket - parameter holding a hashmap of orderlines that represents our shopping cart
+    */   
     public ViewAnOrder(Customer cust, Order order, HashMap<Integer, OrderLine> basket)
     {
         initComponents();
@@ -40,13 +52,20 @@ public class ViewAnOrder extends javax.swing.JFrame {
     }
     
     
+    /**
+     * method that fills our table with required data
+     */
     private void fillTable()
     {
+        //creates a default table model and pulls it from our table
         DefaultTableModel dtm = (DefaultTableModel)orderTbl.getModel();
+        //creates a hashmap of orderlines and populates it with the orderlines in our order
         HashMap<Integer, OrderLine> orderLines = order.getOrderLines();
         
+        //for each orderline in our hashmap
         for(Integer key : orderLines.keySet())
         {
+            //we create a string array and set the elements to the desired output
             String[] data = new String[4];
             double price = orderLines.get(key).getLineTotal();
             data[0] = "" + orderLines.get(key).getProduct().getProductID();
@@ -57,9 +76,11 @@ public class ViewAnOrder extends javax.swing.JFrame {
 
             data[3] = "" + orderLines.get(key).getQuantity();
             
+            //we add the orderline to our model
             dtm.addRow(data);
         }
         
+        //we set the model to our table
         orderTbl.setModel(dtm);
     }
     
@@ -125,11 +146,15 @@ public class ViewAnOrder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackBtnActionPerformed
+        //creates new view orders form passing in our logged in customer and our shopping basket
         ViewOrders vo = new ViewOrders(cust, basket);
+        //closes existing form
         this.dispose();
+        //sets new form to visible
         vo.setVisible(true);
     }//GEN-LAST:event_BackBtnActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */

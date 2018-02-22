@@ -1100,4 +1100,28 @@ public class DBManager {
         //returning our result
         return found;
     }
+
+    /**
+     * method that adjusts stock levels when an item is purchased
+     * @param productID
+     * @param quantity 
+     */
+    public void adjustStockLevel(int productID, int quantity) {
+            try {
+                //points our derby database driver
+                Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //tries to create a connection to the database
+                try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CITYSHOPPINGDB","Stuart", "1234")) {
+                    //creates a statment using our connection
+                    Statement stmt = conn.createStatement();
+                    //running our sql statement
+                    stmt.executeUpdate("UPDATE PRODUCTSTABLE SET STOCKLEVEL = " + (findProduct(productID).getStockLevel() - quantity) + " WHERE PRODUCTID = " + productID + "");
+                }
+            //catch passing out any returned error messages to the console
+            } catch (ClassNotFoundException | SQLException ex) {
+                String message = ex.getMessage();
+                System.out.println(message);
+            }
+    }
+    
 }
